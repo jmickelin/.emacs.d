@@ -1,0 +1,1367 @@
+The following is the latest revision of my Emacs configuration which
+has grown spontaneously over the last decade. I've borrowed several parts
+from others' configurations, too many to properly give credit to here,
+and frankly, in almost all cases, I don't remember where I first found the
+code. Nevertheless, thanks to the original authors!
+
+(For simplicity I've renamed all functions to have the same the
+~jms/~-prefix, regardless of who wrote it originally.)
+
+* Personal info
+
+#+BEGIN_SRC emacs-lisp
+    (setq user-full-name "Jonne Mickelin Sätherblom")
+#+END_SRC
+
+* Emacs initialization
+** Directories
+   The directory where ~package.el~ stores installed packages.
+   #+BEGIN_SRC emacs-lisp
+     (setq package-user-dir (expand-file-name "elpa" user-emacs-directory))
+   #+END_SRC
+
+   Packages not handled through ~package.el~ are stored here.
+   #+BEGIN_SRC emacs-lisp
+     (setq jms/lib-directory (expand-file-name "lib" user-emacs-directory))
+   #+END_SRC
+   
+   Caches and similar go here.
+   #+BEGIN_SRC emacs-lisp
+     (setq jms/var-directory (expand-file-name "var" user-emacs-directory))
+     (when (not (file-exists-p jms/var-directory))
+       (make-directory jms/var-directory))
+   #+END_SRC
+
+   Private settings.
+   #+BEGIN_SRC emacs-lisp
+     (setq jms/private-directory (expand-file-name "private" user-emacs-directory))
+   #+END_SRC
+
+   Snippets for YaSnippet.
+   #+BEGIN_SRC emacs-lisp
+     (setq jms/snippet-directory (expand-file-name "snippets" user-emacs-directory))
+   #+END_SRC
+
+   Backups of files are stored outside the config directory.
+   #+BEGIN_SRC emacs-lisp
+     (setq jms/backup-directory (expand-file-name "~/.backups"))
+   #+END_SRC
+
+   Notes and bookmarks.
+   #+BEGIN_SRC emacs-lisp
+     (setq jms/note-directory (expand-file-name "~/notes"))
+   #+END_SRC
+
+** Utility functions and macros
+
+   #+BEGIN_SRC emacs-lisp
+     (defmacro after (feature &rest body)
+       "After FEATURE is loaded, evaluate BODY."
+       (declare (indent defun))
+       `(eval-after-load ,feature
+          '(progn ,@body)))
+
+
+     (defmacro setappendq (variable &rest entries)
+       "Append the contents of ENTRIES to the variable VARIABLE.
+     If VARIABLE is undefined, it is treated as being nil."
+       `(let ((initial (if (boundp (quote ,variable))
+                           ,variable
+                         nil)))
+          (setq ,variable
+                (append initial
+                        ,@entries))))
+   #+END_SRC
+
+   We use functions from ~cl~ throughout the configuration.
+   #+BEGIN_SRC emacs-lisp
+     (require 'cl)
+   #+END_SRC
+
+** Package sources
+
+   #+BEGIN_SRC emacs-lisp
+     (setq package-archives 
+           '(("gnu" . "http://elpa.gnu.org/packages/")
+             ("melpa" . "http://melpa.org/packages/")))
+   #+END_SRC
+
+** Loading packages
+
+   This sets up the load path so that we can override it
+   #+BEGIN_SRC emacs-lisp
+     (package-initialize nil)
+   #+END_SRC
+
+   Add every subdirectory of ~jms/lib-directory~ to the load path.
+   #+BEGIN_SRC emacs-lisp
+     (let ((default-directory jms/lib-directory))
+       (normal-top-level-add-subdirs-to-load-path))
+   #+END_SRC
+
+   Any site-local or similarly installed packages go here.
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'load-path (expand-file-name "~/.cabal/share/Agda-2.3.1/emacs-mode"))
+   #+END_SRC
+
+   Load the rest of the packages
+   #+BEGIN_SRC emacs-lisp
+     (package-initialize t)
+     ;;(setq package-enable-at-startup nil)
+   #+END_SRC
+
+
+   We handle most other packages via the ~use-package~ macro, which
+   uses ~package.el~ to install missing packages automatically.
+   Install ~use-package~ if it is missing.
+   #+BEGIN_SRC emacs-lisp
+     (when (not (package-installed-p 'use-package))
+       (package-refresh-contents)
+       (package-install 'use-package))
+     (require 'use-package)
+   #+END_SRC
+   
+** Load private configuration
+   All sensitive information is stored in a separate file.
+   #+BEGIN_SRC emacs-lisp
+     (let ((sec-file (expand-file-name "emacs-sec.org"
+                                       jms/private-directory)))
+       (when (file-exists-p sec-file)
+         (org-babel-load-file sec-file)))
+   #+END_SRC
+
+* General configuration
+** Startup
+   Improve the startup speed.
+   #+BEGIN_SRC emacs-lisp
+     (modify-frame-parameters nil '((wait-for-wm . nil)))
+   #+END_SRC
+
+   Don't show the welcome message.
+   #+BEGIN_SRC emacs-lisp
+     (setq inhibit-startup-message t)
+   #+END_SRC
+
+   Use ~org-mode~ for the scratch buffer. Also add a keybinding
+   to quickly (re)open the scratch buffer.
+   #+BEGIN_SRC emacs-lisp
+     (setq initial-major-mode 'org-mode
+           initial-scratch-message "")
+     
+     (defun jms/create-scratch-buffer nil
+        "Jump to the scratch buffer and create one if it doesn't exist."
+        (interactive)
+        (switch-to-buffer (get-buffer-create "*scratch*"))
+        (org-mode))
+     (bind-key "C-x p" 'jms/create-scratch-buffer)
+   #+END_SRC
+** Backup
+
+   #+BEGIN_SRC emacs-lisp
+     (setq backup-directory-alist
+           (list (cons "." jms/backup-directory)))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (setq auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-"
+                                                        jms/var-directory))
+   #+END_SRC
+
+** Path
+   The following package inherits the ~PATH~ and ~MANPATH~ environment
+   variables from the login shell.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package exec-path-from-shell
+         :ensure exec-path-from-shell
+         :init (exec-path-from-shell-initialize))
+   #+END_SRC
+   
+** Encryption
+   Add 
+   #+BEGIN_SRC text
+     epa-file-enctypt-to: ; epa-file-cache-passphrase-for-symmetric-encryption: t
+   #+END_SRC  
+   as file local variables to use symmetric encryption, and
+   #+BEGIN_SRC text
+     epa-file-encrypt-to: ("email@example.com")
+   #+END_SRC
+   for asymmetric.
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'epa-file)
+     (epa-file-enable)
+   #+END_SRC
+   
+** Smex
+   Smex provides an ido-like interface for ~M-x~.
+   #+BEGIN_SRC emacs-lisp
+     (use-package smex
+       :ensure smex
+       :bind ("M-x" . smex)
+       :init (setq smex-save-file (expand-file-name "smex-items"
+                                                    jms/var-directory))
+       :config (smex-initialize))
+  #+END_SRC
+
+** Reenable disabled commands
+   #+BEGIN_SRC emacs-lisp
+     (put 'narrow-to-region 'disabled nil)
+     (put 'dired-find-alternate-file 'disabled nil)
+     (put 'downcase-region 'disabled nil)
+   #+END_SRC   
+* Behaviour
+** Faster keyecho for commands
+   #+BEGIN_SRC emacs-lisp
+     (setq echo-keystrokes 0.1)
+   #+END_SRC
+
+** Prompt before closing.
+   #+BEGIN_SRC emacs-lisp
+     (setq confirm-kill-emacs 'yes-or-no-p)
+   #+END_SRC
+
+** Show hints for some commmands that require several key presses
+   #+BEGIN_SRC emacs-lisp
+     (use-package guide-key
+         :ensure guide-key
+         :init (progn
+                 (setq guide-key/guide-key-sequence
+                       '("C-x r"
+                         "C-x 4"
+                         "C-x v"
+                         "C-x 8"
+                         "C-x x"
+                         "C-c p"
+                         "C-c s"))
+     
+                 (guide-key-mode 1)
+     
+                 (setq guide-key/recursive-key-sequence-flag t)
+                 (setq guide-key/popup-window-position 'bottom)))
+   #+END_SRC
+
+** Disable some default keybindings
+   I dislike the arrow keys.
+   #+BEGIN_SRC emacs-lisp
+     (unbind-key "<left>")
+     (unbind-key "<right>")
+     (unbind-key "<up>")
+     (unbind-key "<down>")
+   #+END_SRC
+
+   This often trips me up when using my WM (which binds ~s-l~).
+   #+BEGIN_SRC emacs-lisp
+     (unbind-key "M-l")
+   #+END_SRC
+
+* Buffers
+** Ibuffer
+  #+BEGIN_SRC emacs-lisp
+    (use-package ibuffer
+        :ensure ibuffer
+        :bind ("C-x C-b" . ibuffer)
+        :config 
+        (progn 
+          (use-package ibuf-ext)
+    
+          (use-package ibuffer-vc
+              :ensure ibuffer-vc)
+    
+          (setq jms/ibuffer-filter-groups
+                '(("*buffers*" (name . "^\\*.*\\*"))
+                  ("Latex" (mode . latex-mode))))
+          (add-hook 'ibuffer-hook
+              (lambda ()
+                ;(ibuffer-vc-set-filter-groups-by-vc-root)
+                (ibuffer-do-sort-by-alphabetic)
+                (setq ibuffer-filter-groups
+                      (append jms/ibuffer-filter-groups
+                              (ibuffer-vc-generate-filter-groups-by-vc-root)))
+                (ibuffer-update nil t)))
+    
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ;; Change the ordering of the filter groups. This must be done as an ;;
+          ;; advice, since the ordering in ibuffer-filter-groups also defines  ;;
+          ;; precedence of the tests. Furthermore, ibuffer-redisplay-engine    ;;
+          ;; reverses the list of groups returned by                           ;;
+          ;; ibuffer-generate-filter-groups, so we need to compute the reverse ;;
+          ;; ordering.                                                         ;;
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    
+          ;; Returns the precedence of a group given it's name. The lower the
+          ;; precedence, the higher the position.
+    
+          ;; ibuffer-vc names it's groups as follows:
+          ;;   (format "%s:%s" (symbol-name backend) root-dir)
+          ;; where backend is a backend supported by vc and
+          ;; root-dir the VC root. The backends that are supported by
+          ;; vc (and thus the ones that ibuffer-vc will use) are
+          ;; defined in the variable vc-handled-backends.
+
+          (defun jms/ibuffer-sort-precedence (group-name)
+            (cond ((some (lambda (backend)
+                           (string-match (concat "^" (symbol-name backend) ":")
+                                         group-name))
+                         vc-handled-backends) 0)
+                  ((string= "Default" group-name) 40)
+                  ((string= "Latex" group-name) 50)
+                  ((string= "*buffers*" group-name) 9999)
+                  (t 45)))
+    
+          ;; Sort lexicographically on the precedence followed by the natural
+          ;; string ordering.
+    
+          (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+                                                           activate)
+            (setq ad-return-value
+                  (nreverse (sort ad-return-value
+                                  (lambda (a b)
+                                    (let* ((id1 (car a))
+                                           (id2 (car b))
+                                           (p1  (jms/ibuffer-sort-precedence id1))
+                                           (p2  (jms/ibuffer-sort-precedence id2)))
+                                      (if (= p1 p2)
+                                          (string< id1 id2)
+                                          (< p1 p2))))))))
+    
+          (setq ibuffer-formats
+                '((mark modified read-only " " 
+                   (name 25 25 :left :elide)
+                   " "
+                   ;(size 9 -1 :right)
+                   ;" "
+                   (mode 14 14 :left :elide)
+                   " "
+                   (vc-status 10 10 :left)
+                   " "
+                   filename-and-process)))))
+  #+END_SRC
+
+** Uniquify
+   
+   #+BEGIN_SRC emacs-lisp
+     (use-package uniquify
+       :init (setq uniquify-buffer-name-style 'post-forward
+                   uniquify-separator ":"))
+   #+END_SRC
+
+* Dired
+  
+  #+BEGIN_SRC emacs-lisp
+    (use-package dired-x
+        :init (add-hook 'dired-load-hook (lambda ()
+                                           (load "dired-x"))))
+    
+    (use-package dired+
+        :ensure dired+
+        :init
+        (add-hook 'dired-load-hook 
+                  (lambda ()
+                    (bind-key "d" 'diredp-dired-files ctl-x-map)
+                    (bind-key "d" 'diredp-dired-files-other-window ctl-x-4-map)
+                    (setq diredp-wrap-around-flags))))
+    
+    (use-package dired-details
+        :ensure dired-details
+        :init (progn
+                (setq-default dired-details-hidden-string "--- ")
+                (dired-details-install)))
+    
+    (defun jms/dired-init ()
+      ;; Dired mixes normal files and dotfiles. Since I couldn't figure
+      ;; out how to fix this, we count dotfiles as boring.
+      (dired-omit-mode 1)
+      (setq dired-omit-files (concat dired-omit-files "\\|^\\.[^\\.]+$"))
+    
+      ;; Sort directories first, then by by extension.
+      (setq dired-listing-switches "-lXGh --group-directories-first"))
+    
+    (add-hook 'dired-load-hook #'jms/dired-init)
+  #+END_SRC
+
+* Ido
+
+  #+BEGIN_SRC emacs-lisp
+    (ido-mode t)
+    (ido-everywhere t)
+    (setq ido-enable-flex-matching t
+          ido-case-fold t
+          ido-max-work-file-list 30
+          ido-save-directory-list-file (expand-file-name
+                                        "ido.last"
+                                        jms/var-directory))
+    
+    (use-package idomenu
+        :ensure idomenu
+        :bind ("M-i" . idomenu))
+    
+    (use-package ido-vertical-mode
+        :ensure ido-vertical-mode
+        :init (ido-vertical-mode t))
+  #+END_SRC
+
+* Input method
+  Use ~agda-mode~'s input method to type various unicode symbols.
+  Rebind the default Agda prefix to ~§~ in order to not interfere with
+  programming.
+  #+BEGIN_SRC emacs-lisp
+    (use-package agda-input
+        :init (progn
+                (defadvice switch-to-buffer (after activate-input-method activate)
+                  (activate-input-method "Agda"))
+    
+                
+                (setq agda-input-tweak-all '(agda-input-compose
+                                             (agda-input-prepend "§")
+                                             (agda-input-nonempty)))
+                (setq agda-input-user-translations '(("§" "§")))
+                ;; Make the settings have effect. Needed since we are not using
+                ;; customize.
+                (agda-input-setup)))
+  #+END_SRC
+
+* Locale and encoding
+** Weeks start on mondays
+
+   #+BEGIN_SRC emacs-lisp
+     (setq calendar-week-start-day 1
+           calendar-day-name-array ["Söndag" "Måndag" "Tisdag" "Onsdag"
+                                             "Torsdag" "Fredag" "Lördag"]
+           calendar-month-name-array ["Januari" "Februari" "Mars" "April" "Maj"
+                                                "Juni" "Juli" "Augusti" "September"
+                                                "Oktober" "November" "December"])
+     
+   #+END_SRC
+
+** Use UTF-8 for everything
+
+   #+BEGIN_SRC emacs-lisp
+     (prefer-coding-system 'utf-8)
+   #+END_SRC
+
+** Never use tabs
+   #+BEGIN_SRC emacs-lisp
+     (setq-default indent-tabs-mode nil)
+   #+END_SRC
+** Do not use double spaces ever
+   This helps fix problems with filling and sentence-based movement
+   commands.
+   #+BEGIN_SRC emacs-lisp
+     (setq sentence-end-double-space nil
+           colon-double-space        nil)
+   #+END_SRC
+
+* History
+   Save history.
+   #+BEGIN_SRC emacs-lisp
+     (setq history-length 250)
+   #+END_SRC
+   
+* Privacy
+** Clear the kill ring
+
+   #+BEGIN_SRC emacs-lisp
+     (defun clear-kill-ring ()
+       (interactive)
+       (setq kill-ring nil))
+   #+END_SRC
+
+* Files
+** Find files in the current repository
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package find-file-in-repository
+         :ensure find-file-in-repository
+         :bind ("C-x C-g" . find-file-in-repository))
+   #+END_SRC
+
+** Inhibit the "symlink to version-controlled source-file" warning
+
+   #+BEGIN_SRC emacs-lisp
+     (setq vc-follow-symlinks t)
+   #+END_SRC
+
+** Open recent files
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'recentf)
+     (recentf-mode t)
+     (setq recentf-max-saved-items 50)
+
+     (defun ido-recentf-open ()
+       "Use `ido-completing-read' to \\[find-file] a recent file"
+       (interactive)
+       (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+           (message "Opening file...")
+         (message "Aborting")))
+     (bind-key "C-x C-r" 'ido-recentf-open)
+   #+END_SRC
+
+** Write time stamps when saving files
+   For things not under version control.
+
+   Add the following template near the top of a file: 
+   #+BEGIN_SRC text
+     Time-stamp: <>
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (setq time-stamp-format "%f %:y-%02m-%02d %02H:%02M:%02S %U")
+     (add-hook 'write-file-hooks 'time-stamp)
+   #+END_SRC
+
+** Quickly open config file
+
+   #+BEGIN_SRC emacs-lisp
+     (defun dotemacs ()
+       (interactive)
+       (find-file jms/emacs-init-org-file))
+   #+END_SRC
+
+* Movement and editing
+** Ace-jump
+   Quickly jump within documents.
+   #+BEGIN_SRC emacs-lisp
+     (use-package ace-jump-mode
+         :ensure ace-jump-mode
+         :bind ("C-ö" . ace-jump-mode))
+   #+END_SRC
+
+** Smart scan
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package smartscan
+       :ensure smartscan
+       :init (progn
+               (unbind-key "M-p" smartscan-map)
+               (unbind-key "M-n" smartscan-map)
+               (bind-key "C-c n n" 'smartscan-symbol-go-forward smartscan-map)
+               (bind-key "C-c n p" 'smartscan-symbol-go-backward smartscan-map)
+               (global-smartscan-mode t)))
+   #+END_SRC
+
+** Autocompletion
+   Set up autocompletion, and use the usual keybindings in the
+   completion list.
+   #+BEGIN_SRC emacs-lisp
+     (use-package auto-complete
+         :ensure auto-complete
+         :init (progn
+                 (ac-config-default)
+                 (setq ac-comphist-file (expand-file-name "ac-comphist.dat" 
+                                                          jms/var-directory))
+                 (bind-key "C-n" 'ac-next ac-complete-mode-map)
+                 (bind-key "C-p" 'ac-previous ac-complete-mode-map)))
+   #+END_SRC
+
+   Alternatively, use ~ido-at-point~ for ~ido~-like matching.
+   #+BEGIN_SRC emacs-lisp
+     (use-package ido-at-point
+         :ensure ido-at-point
+         :init (ido-at-point-mode))
+   #+END_SRC
+   
+** Put the name of the current file in the kill ring.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun copy-file-name-to-kill-ring ()
+       "Copy the current buffer file name to the kill ring."
+       (interactive)
+       (let ((filename (if (equal major-mode 'dired-mode)
+                           default-directory
+                         (buffer-file-name))))
+         (when filename
+           (kill-new filename)
+           (message "Copied buffer file name '%s' to the kill ring." filename))))
+   #+END_SRC
+
+** Prompt for a file (with completion) and insert the result
+
+   #+BEGIN_SRC emacs-lisp
+     (defun jms/insert-file-name (filename &optional args)
+       "Insert name of file FILENAME into buffer after point.
+       
+       Prefixed with \\[universal-argument], expand the file name to
+       its fully canocalized path.  See `expand-file-name'.
+       
+       Prefixed with \\[negative-argument], use relative path to file
+       name from current directory, `default-directory'.  See
+       `file-relative-name'.
+       
+       The default with no prefix is to insert the file name exactly as
+       it appears in the minibuffer prompt."
+       ;; Based on insert-file in Emacs -- ashawley 20080926
+       (interactive "*fInsert file name: \nP")
+       (cond ((eq '- args)
+              (insert (file-relative-name filename)))
+             ((not (null args))
+              (insert (expand-file-name filename)))
+             (t
+              (insert filename))))
+     
+     (bind-key "C-c i" 'jms/insert-file-name)
+   #+END_SRC
+
+** Expand-region
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package expand-region
+         :ensure expand-region
+         :bind ("C-'" . er/expand-region))
+   #+END_SRC
+
+** Electric parentheses
+   #+BEGIN_SRC emacs-lisp
+     (electric-pair-mode t)
+   #+END_SRC
+** Multiple cursors
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package multiple-cursors
+         :ensure multiple-cursors
+         :bind (("C-S-c C-S-c" . mc/edit-lines)
+                ("C-S-c C-e"   . mc/edit-ends-of-lines)
+                ("C-S-c C-a"   . mc/edit-beginnings-of-lines)
+     
+                ("M-ä" . mc/mark-all-dwim)
+                ("C-å" . mc/mark-previous-like-this)
+                ("C-ä" . mc/mark-next-like-this)
+                ("C-Ä" . mc/mark-more-like-this-extended)
+                ("M-å" . mc/mark-all-in-region)
+     
+                ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
+   #+END_SRC
+
+** Spelling
+
+   #+BEGIN_SRC emacs-lisp
+     (setq ispell-process-directory (expand-file-name "~/")
+           flyspell-issue-message-flag nil
+           ispell-dictionary "english")
+
+     (dolist (hook '(text-mode-hook))
+       (add-hook hook (lambda () (flyspell-mode 1))))
+
+     ;; Flyspell overrides this key, for some reason.
+     (global-set-key (kbd "M-<tab>") 'completion-at-point)
+
+     (defun jms/flyspell-change-dictionary (lang)
+       (interactive "sLanguage: ")
+       (ispell-change-dictionary lang)
+       (flyspell-buffer))
+
+     (defun jms/flysepll-svenska ()
+       (interactive)
+       (jms/flyspell-change-dictionary "svenska"))
+
+     (defun jms/flysepll-english ()
+       (interactive)
+       (jms/flyspell-change-dictionary "english"))
+
+     (define-prefix-command 'spelling-map)
+     (global-set-key (kbd "C-c s") 'spelling-map)
+
+     (bind-key "s" 'jms/flysepll-svenska spelling-map)
+     (bind-key "e" 'jms/flysepll-english spelling-map)
+
+     ;; easy spell check
+     (bind-key "w" 'ispell-word spelling-map)
+     (bind-key "a" 'flyspell-mode spelling-map)
+     (bind-key "b" 'flyspell-buffer spelling-map)
+     (bind-key "p" 'flyspell-check-previous-highlighted-word spelling-map)
+     (defun flyspell-check-next-highlighted-word ()
+       "Custom function to spell check next highlighted word"
+       (interactive)
+       (flyspell-goto-next-error)
+       (ispell-word))
+     (bind-key "n" 'flyspell-check-next-highlighted-word spelling-map)
+
+   #+END_SRC
+** Undo
+   Undo tree.
+   #+BEGIN_SRC emacs-lisp
+     (use-package undo-tree
+       :ensure undo-tree
+       :init (progn (setq undo-tree-visualizer-diff t
+                          undo-tree-visualizer-relative-timestamps t
+                          undo-tree-enable-undo-in-region nil)
+                    (global-undo-tree-mode)))
+   #+END_SRC
+
+** Palimpsest
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package palimpsest
+       :ensure palimpsest
+       :init  (add-hook 'text-mode-hook 'palimpsest-mode))
+   #+END_SRC
+
+** Yasnippets
+   
+   #+BEGIN_SRC emacs-lisp
+     (use-package yasnippet
+     :ensure yasnippet
+         :init (progn
+                 (setq yas-snippet-dirs (list jms/snippet-directory))
+                 (yas-global-mode 1))
+         :config (progn (yas-reload-all)
+                        (bind-key "C-<return>" 'yas-expand yas-minor-mode-map)
+                        (setq yas/prompt-functions '(yas/ido-prompt))))
+   #+END_SRC
+
+** X selection
+   By default, ~S-insert~ is bound to the normal yank command, which is
+   confusing and not consistent with other programs. Rebind it to use
+   the same method of getting the primary x-selection as mouse-2
+   does.
+   #+BEGIN_SRC emacs-lisp
+     ;;; Code from /usr/share/emacs/24.3/lisp/mouse.el.gz
+     (defun jms/insert-x-selection ()
+       (interactive)
+       (let ((primary
+              (cond
+                ((eq (framep (selected-frame)) 'w32)
+                 ;; MS-Windows emulates PRIMARY in x-get-selection, but not
+                 ;; in x-get-selection-value (the latter only accesses the
+                 ;; clipboard).  So try PRIMARY first, in case they selected
+                 ;; something with the mouse in the current Emacs session.
+                 (or (x-get-selection 'PRIMARY)
+                     (x-get-selection-value)))
+                ((fboundp 'x-get-selection-value) ; MS-DOS and X.
+                 ;; On X, x-get-selection-value supports more formats and
+                 ;; encodings, so use it in preference to x-get-selection.
+                 (or (x-get-selection-value)
+                     (x-get-selection 'PRIMARY)))
+                ;; FIXME: What about xterm-mouse-mode etc.?
+                (t
+                 (x-get-selection 'PRIMARY)))))
+         (unless primary
+           (error "No selection is available"))
+         (push-mark (point))
+         (insert primary)))
+
+     (bind-key "S-<insert>" #'jms/insert-x-selection)
+   #+END_SRC
+
+   Make the middle click insert text at point.
+   #+BEGIN_SRC emacs-lisp
+     (setq mouse-yank-at-point t)
+   #+END_SRC
+
+* Folding
+** Outline mode
+
+   #+BEGIN_SRC emacs-lisp
+     (after 'outline
+       (use-package outline-magic
+         :ensure outline-magic
+         :init (bind-key "<f10>" 'outline-cycle outline-minor-mode-map)))
+     
+     (set-display-table-slot
+      standard-display-table
+      'selective-display
+      (let ((face-offset (* (face-id 'shadow) (lsh 1 22))))
+        (vconcat (mapcar (lambda (c) (+ face-offset c)) " [...] "))))
+   #+END_SRC
+
+* Linting and validating
+** Flycheck
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package flycheck
+         :ensure flycheck
+         :init (setq global-flycheck-mode t))
+   #+END_SRC
+
+** Flymake
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package flymake
+       :config
+       (use-package flymake-cursor
+         :ensure flymake-cursor
+         :init (setq flymake-cursor-auto-enable t)))
+   #+END_SRC
+
+* Highlighting
+  - Use ~C-x w h regexp RET face RET~ to highlight portions of text.
+  - Use ~C-x w l regexp RET face RET~ to highlight the entire line.
+  - Use ~C-x w r regexp RET~ to remove a highlight.
+
+  #+BEGIN_SRC emacs-lisp
+    (global-hi-lock-mode t)
+  #+END_SRC
+
+* Projects
+** Projectile
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package projectile
+       :ensure projectile
+       :init
+       (progn (projectile-global-mode)
+              (setq projectile-known-projects-file
+                    (expand-file-name "projectile-bookmarks.eld"
+                                      jms/var-directory))))
+   #+END_SRC
+
+* Version control
+** Magit
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit
+       :ensure magit
+       :bind ("C-M-g" . magit-status))
+   #+END_SRC
+
+* Applications
+** Docview
+
+   #+BEGIN_SRC emacs-lisp
+     (setq doc-view-continuous t)
+   #+END_SRC
+
+** Deft
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package deft
+       :ensure deft
+       :bind ("C-c o" . deft)
+       :init (setq deft-text-mode 'org-mode
+                   deft-extension ".org"
+                   deft-directory (expand-file-name "deft"
+                                                    jms/note-directory)))
+   #+END_SRC
+
+** Image files
+   Use as an image viewer.
+   #+BEGIN_SRC emacs-lisp
+     (auto-image-file-mode t)
+   #+END_SRC
+
+** External
+
+   #+BEGIN_SRC emacs-lisp
+     (setq browse-url-browser-function 'browse-url-generic
+           browse-url-generic-program "/usr/bin/conkeror")
+   #+END_SRC
+
+* Language
+** Agda
+
+   #+BEGIN_SRC emacs-lisp
+     (load-file (let ((coding-system-for-read 'utf-8))
+                  (shell-command-to-string "agda-mode locate")))
+
+     (setq agda2-include-dirs
+           (list "."
+                 (expand-file-name "~/.cabal/share/Agda-2.3.1/stdlib/src")))
+   #+END_SRC
+
+** C
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'c-mode-common-hook '(lambda () 
+                                     (c-toggle-auto-newline 1)
+                                     (setq c-default-style "linux" 
+                                           c-basic-offset 4)))
+   #+END_SRC
+
+** Haskell
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package haskell-mode
+       :ensure haskell-mode
+       :mode ("\\.l?hs" . haskell-mode)
+
+       :init (progn
+               (setq haskell-tags-on-save t
+                     haskell-stylish-on-save t)
+
+               (after 'auto-complete
+                 ;; Do this to get a variable in scope
+                 (auto-complete-mode)
+                 ;; Set up the haskell completions.
+                 (defun hc-ac-haskell-candidates (prefix)
+                   (let ((cs (haskell-process-get-repl-completions
+                              (haskell-process)
+                              prefix)))
+                     (remove-if (lambda (c) (string= "" c)) cs)))
+                 (ac-define-source haskell
+                   '((candidates . (hc-ac-haskell-candidates ac-prefix)))))
+
+
+               (use-package shm
+                 :ensure shm
+                 :init (progn
+                         (set-face-background 'shm-current-face "#eee8d5")
+                         (set-face-background 'shm-quarantine-face "light blue")))
+
+               (use-package ghc
+                 :ensure ghc))
+
+       :config
+       (progn
+
+         (add-hook 'haskell-mode-hook #'jms/haskell-init)
+
+         (bind-key "C-c C-l" 'haskell-process-load-file     haskell-mode-map)
+         (bind-key "C-c C-c" 'haskell-process-cabal-build   haskell-mode-map)
+         (bind-key "C-c C-z" 'haskell-interactive-switch    haskell-mode-map)
+         (bind-key "C-c c"   'haskell-cabal-visit-file      haskell-mode-map)
+         (bind-key "C-c C-t" 'haskell-process-do-type       haskell-mode-map)
+         (bind-key "C-c C-i" 'haskell-process-do-info       haskell-mode-map)
+         (bind-key "<SPC>"   'haskell-mode-contextual-space haskell-mode-map)
+         (bind-key "<f8>"    'haskell-navigate-imports      haskell-mode-map)
+         (bind-key "M-."     'haskell-mode-tag-find         haskell-mode-map)
+         (bind-key "C-c g"   'haskell-hoogle                haskell-mode-map)
+         (bind-key "C-`"     'haskell-interactive-bring     haskell-mode-map)))
+
+     (defun jms/haskell-init ()
+       (after 'auto-complete
+         (auto-complete-mode 1)
+         (add-to-list 'ac-sources 'ac-source-haskell))
+
+       (turn-on-haskell-indent)
+
+       (turn-on-haskell-doc-mode)
+
+       (structured-haskell-mode)
+
+       (ghc-init))
+   #+END_SRC
+
+** Idris
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package idris-mode
+       :ensure idris-mode)
+   #+END_SRC
+
+** Lisp
+   Show documentation in the modeline.
+   #+BEGIN_SRC emacs-lisp
+     (use-package eldoc
+       :init
+       (progn
+         (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+         (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+         (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
+   #+END_SRC
+
+   Use paredit.
+   #+BEGIN_SRC emacs-lisp
+     (use-package paredit
+         :ensure paredit
+         :init (progn
+                 (mapcar (lambda (hook) (add-hook hook #'enable-paredit-mode))
+                  '(emacs-lisp-mode-hook
+                    eval-expression-minibuffer-setup-hook 
+                    ielm-mode-hook
+                    lisp-mode-hook
+                    lisp-interaction-mode-hook
+                    scheme-mode-hook))
+
+                 (after 'eldoc
+                   (eldoc-add-command
+                    'paredit-backward-delete
+                    'paredit-close-round))))
+   #+END_SRC
+
+** Latex
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package tex-site
+       :ensure auctex
+       :init
+       (progn (setq TeX-auto-save t
+                    TeX-pare-self t
+                    TeX-PDF-mode t
+                    TeX-view-program-list `(("zathura" "zathura --fork %o"))
+                    TeX-view-program-selection '((output-pdf "zathura"))
+
+                    TeX-electric-sub-and-superscript t
+                    TeX-fold-math-spec-list '(("∧" ("\land"))
+                                              ("∨" ("\lor"))
+                                              ("→" ("\implies"))
+                                              ("⊢" ("\entailsc"))))
+              (setq-default TeX-master nil)
+
+              (setq reftex-plug-into-AUCTeX t
+                    reftex-label-alist 
+                    '(("axiom"       ?a "ax:"  "~\\ref{%s}" nil ("axiom"   "ax.") -2)
+                      ("theorem"     ?h "thm:" "~\\ref{%s}" t ("theorem" "thm.") -3)
+                      ("restatable"  ?h "thm:" "~\\ref{%s}" t ("theorem" "thm.") -3)
+                      ("thmenum"     ?h "thm:" "~\\ref{%s}" t ("theorem" "thm.") -3)
+                      ("corollary"   ?h "cor:" "~\\ref{%s}" t ("corollary" "cor.") -3)
+                      ("proposition" ?h "prop:" "~\\ref{%s}" t ("proposition" "prop.") -3)
+                      ("lemma"       ?h "lemma:" "~\\ref{%s}" t ("lemma" "lemma.") -3))))
+       :config (add-hook 'LaTeX-mode-hook #'jms/LaTeX-init))
+
+     (defun jms/LaTeX-init ()
+       (flyspell-mode)
+       (flyspell-buffer)
+       (LaTeX-math-mode)
+       (turn-on-reftex)
+
+       (LaTeX-add-environments
+        '("axiom" LaTeX-env-label)
+        '("theorem" LaTeX-env-label)
+        '("corollary" LaTeX-env-label)
+        '("proposition" LaTeX-env-label)
+        '("lemma" LaTeX-env-label))
+
+       (eval-after-load "tex" 
+         '(setcdr (assoc "LaTeX" TeX-command-list)
+                  '("%`%l%(mode) -shell-escape%' %t"
+                    TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX")))
+
+       ;; Use preview-latex to compile parts of the file to inline images.
+       ;; Keys:  C-c C-p C-b       - preview buffer
+       ;;        C-c C-p C-c C-b   - unpreview buffer
+       ;;        C-c C-p C-p       - preview at point
+       ;; (load "preview-latex.el" nil t t)
+
+       (after 'mic-paren
+         (paren-toggle-matching-quoted-paren 1)
+         (paren-toggle-matching-paired-delimiter 1))
+
+       ;; Use outline mode to fold sections (and environments).
+       ;; Keys:  F10                 - outline-cycle
+       ;; Note that I use outline-magic rather than the default behaviour.
+       (outline-minor-mode 1)
+
+       ;; Use TeX-fold-mode to fold macros, comments and environments.
+       ;; Keys: C-c C-o C-f     - toggle folding mode
+       ;;       C-c C-o C-b     - fold buffer
+       ;;       C-c C-o b       - unfold buffer
+       ;;       C-c C-o C-o     - fold do what I want
+       (TeX-fold-mode 1)
+       (TeX-fold-buffer))
+
+     (defun jms/LaTeX-align-and-newline ()
+       "Automatically insert \\ and & as needed within an align or
+     align* environment."
+       (interactive "*")
+       (if (member (LaTeX-current-environment) '("align" "align*"))
+           (progn
+             (insert "\\\\")
+             (newline-and-indent)
+             (insert "&"))
+         (newline-and-indent)))
+   #+END_SRC
+
+** Org
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-completion-use-ido t)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (bind-key "C-c l" 'org-store-link)
+     (bind-key "C-c a" 'org-agenda)
+     (bind-key "C-c b" 'org-iswitchb)
+   #+END_SRC
+
+*** Capturing
+   #+BEGIN_SRC emacs-lisp
+     (bind-key "C-M-r" 'org-capture)
+     (setappendq org-capture-templates 
+                 `(("t" "Todo" entry
+                    (file+headline ,(expand-file-name "todo.org"
+                                                      jms/note-directory)
+                                   "Tasks")
+                    "* TODO %?\n %i\nAdded: %U\n%?")
+                   ("n" "Notes" entry
+                    (file+headline ,(expand-file-name "notes.org"
+                                                      jms/note-directory)
+                                   "Notes")
+                    "* %u %?")))
+   #+END_SRC
+
+*** Browser bookmarks
+    Store browser's bookmarks in an ~.org~ file (using ~org-protocol~).
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'org-capture-templates
+                   `("w" "Website" entry
+                     (file+headline ,(expand-file-name "bookmarks/bookmarks.org"
+                                                       jms/note-directory)
+                                    "Inbox")
+                     "* %c\n  :DATE: %u\n" :immediate-finish :kill-buffer))
+
+      (use-package org-protocol)
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (defun find-browser-bookmarks ()
+        "Open the browser bookmark file."
+        (interactive)
+        (find-file (expand-file-name "bookmarks/bookmarks.org"
+                                     jms/note-directory)))
+    #+END_SRC
+
+*** Babel   
+   #+BEGIN_SRC emacs-lisp
+     (setq org-src-fontify-natively t)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (defun org-insert-src-block (src-code-type)
+       "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+       (interactive
+        (let ((src-code-types
+               '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                 "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
+                 "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
+                 "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
+                 "scheme" "sqlite")))
+          (list (ido-completing-read "Source code type: " src-code-types))))
+       (progn
+         (newline-and-indent)
+         (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+         (newline-and-indent)
+         (insert "#+END_SRC\n")
+         (previous-line 2)
+         (org-edit-src-code)))
+     (bind-key "C-c s i" 'org-insert-src-block org-mode-map)
+   #+END_SRC
+** Yaml
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package yaml-mode
+       :ensure yaml-mode
+       :mode (("\\.yml$" . yaml-mode) ("\\.yaml$" . yaml-mode)))
+   #+END_SRC
+* Appearance
+** Remove toolbars and other nonsense
+  #+BEGIN_SRC emacs-lisp
+    (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+    (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+    (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+  #+END_SRC
+  
+** Change cursor color according to mode (overwrite, insert, read-only)
+  #+BEGIN_SRC emacs-lisp
+    (setq jms/set-cursor-color-color "")
+    (setq jms/set-cursor-color-buffer "")
+    (defun jms/set-cursor-color-according-to-mode ()
+      "change cursor color according to some minor modes."
+      ;; set-cursor-color is somewhat costly, so we only call it when needed:
+      (let ((color
+             (if buffer-read-only "black"
+               (if overwrite-mode "red"
+                 "blue"))))
+        (unless (and
+                 (string= color jms/set-cursor-color-color)
+                 (string= (buffer-name) jms/set-cursor-color-buffer))
+          (set-cursor-color (setq jms/set-cursor-color-color color))
+          (setq jms/set-cursor-color-buffer (buffer-name)))))
+    (add-hook 'post-command-hook 'jms/set-cursor-color-according-to-mode)
+  #+END_SRC
+
+** Print file name in title
+  #+BEGIN_SRC emacs-lisp
+    (setq frame-title-format
+      '("" invocation-name ": "(:eval (if (buffer-file-name)
+                    (abbreviate-file-name (buffer-file-name))
+                      "%b"))))
+  #+END_SRC
+
+** Highlight the current line
+  #+BEGIN_SRC emacs-lisp
+    (global-hl-line-mode 1)
+  #+END_SRC
+
+** Show matching parentheses
+   The package ~mic-paren~ offers some advantages over ~show-paren-mode~
+   (e.g. it still works if the matching parenthesis is off-screen).
+   #+BEGIN_SRC emacs-lisp
+     (use-package mic-paren
+       :ensure mic-paren
+       :init (paren-activate))
+   #+END_SRC
+
+** Color parentheses by depth
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package rainbow-delimiters
+        :ensure rainbow-delimiters
+        :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  #+END_SRC
+
+** Fringe
+   Show the git status of every line in the fringe.
+   #+BEGIN_SRC emacs-lisp
+     (use-package git-gutter-fringe
+         :ensure git-gutter-fringe
+         :init (progn 
+                 (global-git-gutter-mode t)
+                 (set-face-foreground 'git-gutter-fr:modified "dark orange")
+                 (set-face-foreground 'git-gutter-fr:added    "dark green")
+                 (set-face-foreground 'git-gutter-fr:deleted  "dark red")
+     
+                 (setq git-gutter-fr:side 'right-fringe)
+     
+                 (fringe-helper-define 'git-gutter-fr:modified nil
+                   "XXXXXXXX"
+                   "XXXXXXXX"
+                   "XXXXXXXX"
+                   "XXXXXXXX"
+                   "XXXXXXXX"
+                   "XXXXXXXX"
+                   "XXXXXXXX"
+                   "XXXXXXXX")
+     
+                 (fringe-helper-define 'git-gutter-fr:added nil
+                   "...XX..."
+                   "...XX..."
+                   "...XX..."
+                   "XXXXXXXX"
+                   "XXXXXXXX"
+                   "...XX..."
+                   "...XX..."
+                   "...XX...")
+     
+                 (fringe-helper-define 'git-gutter-fr:deleted nil
+                   "........"
+                   "........"
+                   "XXXXXXXX"
+                   "XXXXXXXX"
+                   "XXXXXXXX"
+                   "........"
+                   "........"
+                   "........")))
+   #+END_SRC
+
+** Theme
+  #+BEGIN_SRC emacs-lisp
+    (use-package moe-theme
+      :ensure moe-theme
+      :init (load-theme 'moe-light t))
+  #+END_SRC
+** Modeline
+
+   #+BEGIN_SRC emacs-lisp
+     (which-function-mode 1)
+     (setq which-func-unknown "⊤")
+
+     ;; Source: http://amitp.blogspot.se/2011/08/emacs-custom-mode-line.html
+
+     ;; Mode line setup
+     (setq-default
+      mode-line-format
+      '(; Position, including warning for 80 columns
+        (:propertize "%4l:" face mode-line-position-face)
+        (:eval (propertize "%2c" 'face
+                           (if (>= (current-column) 80)
+                               'mode-line-80col-face
+                             'mode-line-position-face)))
+        ; emacsclient [default -- keep?]
+        mode-line-client
+        "  "
+        ; read-only or modified status
+        (:eval
+         (cond (buffer-read-only
+                (propertize " RO " 'face 'mode-line-read-only-face))
+               ((buffer-modified-p)
+                (propertize " ** " 'face 'mode-line-modified-face))
+               (t "    ")))
+        "  "
+        ; directory and buffer/file name
+        ;; (:propertize (:eval (shorten-directory default-directory 30))
+        ;;              face mode-line-folder-face)
+        (:propertize "%b"
+                     face mode-line-filename-face)
+        ; narrow [default -- keep?]
+        " %n "
+        ; mode indicators: vc, recursive edit, major mode, minor modes, process, global
+        (vc-mode vc-mode)
+        " "
+        (:propertize mode-name
+                     face mode-line-mode-face)
+        " "
+        ;; (:eval (propertize (format-mode-line minor-mode-alist)
+        ;;                    'face 'mode-line-minor-mode-face))
+        (:propertize mode-line-process
+                     face mode-line-process-face)
+        "  "
+        (:propertize which-func-current
+                     face mode-line-filename-face)
+        ;"  "
+        ;(global-mode-string global-mode-string)
+        ;"    "
+        ; nyan-mode uses nyan cat as an alternative to %p
+        ;(:eval (when nyan-mode (list (nyan-create))))
+        ))
+
+     ;; Helper function
+     (defun shorten-directory (dir max-length)
+       "Show up to `max-length' characters of a directory name `dir'."
+       (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
+             (output ""))
+         (when (and path (equal "" (car path)))
+           (setq path (cdr path)))
+         (while (and path (< (length output) (- max-length 4)))
+           (setq output (concat (car path) "/" output))
+           (setq path (cdr path)))
+         (when path
+           (setq output (concat ".../" output)))
+         output))
+
+     ;; Extra mode line faces
+     (make-face 'mode-line-read-only-face)
+     (make-face 'mode-line-modified-face)
+     (make-face 'mode-line-folder-face)
+     (make-face 'mode-line-filename-face)
+     (make-face 'mode-line-position-face)
+     (make-face 'mode-line-mode-face)
+     (make-face 'mode-line-minor-mode-face)
+     (make-face 'mode-line-process-face)
+     (make-face 'mode-line-80col-face)
+
+     (set-face-attribute 'mode-line nil
+         :foreground "gray60" :background "gray20"
+         :inverse-video nil
+         :box '(:line-width 4 :color "gray20" :style nil))
+     (set-face-attribute 'mode-line-inactive nil
+         :foreground "gray80" :background "gray40"
+         :inverse-video nil
+         :box '(:line-width 4 :color "gray40" :style nil))
+
+     (set-face-attribute 'mode-line-read-only-face nil
+         :inherit 'mode-line-face
+         :foreground "#4271ae"
+         :box '(:line-width 2 :color "#4271ae"))
+     (set-face-attribute 'mode-line-modified-face nil
+         :inherit 'mode-line-face
+         :foreground "#c82829"
+         :background "#ffffff"
+         :box '(:line-width 2 :color "#c82829"))
+     (set-face-attribute 'mode-line-folder-face nil
+         :inherit 'mode-line-face
+         :foreground "gray60")
+     (set-face-attribute 'mode-line-filename-face nil
+         :inherit 'mode-line-face
+         :foreground "#eab700"
+         :weight 'bold)
+     (set-face-attribute 'mode-line-position-face nil
+         :inherit 'mode-line-face
+         :family "DejaVu Sans Mono")
+     (set-face-attribute 'mode-line-mode-face nil
+         :inherit 'mode-line-face
+         :foreground "gray80"
+         :box '(:line-width 2 :color "#gray60"))
+     (set-face-attribute 'mode-line-minor-mode-face nil
+         :inherit 'mode-line-mode-face
+         :foreground "gray40"
+         :height 110)
+     (set-face-attribute 'mode-line-process-face nil
+         :inherit 'mode-line-face
+         :foreground "#718c00")
+     (set-face-attribute 'mode-line-80col-face nil
+         :inherit 'mode-line-position-face
+         :foreground "black" :background "#eab700")
+   #+END_SRC
+
+
