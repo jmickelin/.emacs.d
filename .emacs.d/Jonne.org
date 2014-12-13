@@ -1072,7 +1072,9 @@ code. Nevertheless, thanks to the original authors!
      For use with the todo LaTeX package and my stylesheet.")
 
      (defun jms/TeX-insert-todo (category &optional inline)
-       "Insert a \"todo\" macro. "
+       "Insert a \"todo\" macro in the margin.
+
+     If the universal argument is given, insert the inline version instead."
        (interactive
         (let ((categories '("todo" "new" "ref" "clarify" "unsure" "rewrite" "style")))
           (list (ido-completing-read "Todo category: " categories)
