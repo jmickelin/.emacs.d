@@ -975,34 +975,37 @@ code. Nevertheless, thanks to the original authors!
      (use-package tex-site
        :ensure auctex
        :init
-       (progn (setq TeX-auto-save t
-                    TeX-pare-self t
-                    TeX-PDF-mode t
-                    TeX-view-program-list `(("zathura" "zathura --fork %o"))
-                    TeX-view-program-selection '((output-pdf "zathura"))
+       (progn
+         (setq TeX-auto-save t
+               TeX-pare-self t
+               TeX-PDF-mode t
+               TeX-view-program-list '(("zathura"
+                                        "zathura --fork -s -x \"emacsclient --eval '(jms/synctex-sync-command \"'\"'%{input}'\"'\" %{line})'\" %o"))
+               TeX-view-program-selection '((output-pdf "zathura"))
 
-                    TeX-electric-sub-and-superscript t
-                    TeX-fold-math-spec-list '(("∧" ("\land"))
-                                              ("∨" ("\lor"))
-                                              ("→" ("\implies"))
-                                              ("⊢" ("\entailsc"))))
-              (setq-default TeX-master nil)
+               TeX-electric-sub-and-superscript t
+               TeX-fold-math-spec-list '(("∧" ("\land"))
+                                         ("∨" ("\lor"))
+                                         ("→" ("\implies"))
+                                         ("⊢" ("\entailsc"))))
+         (setq-default TeX-master nil)
 
-              (setq reftex-plug-into-AUCTeX t
-                    reftex-label-alist 
-                    '(("axiom"       ?a "ax:"  "~\\ref{%s}" nil ("axiom"   "ax.") -2)
-                      ("theorem"     ?h "thm:" "~\\ref{%s}" t ("theorem" "thm.") -3)
-                      ("restatable"  ?h "thm:" "~\\ref{%s}" t ("theorem" "thm.") -3)
-                      ("thmenum"     ?h "thm:" "~\\ref{%s}" t ("theorem" "thm.") -3)
-                      ("corollary"   ?h "cor:" "~\\ref{%s}" t ("corollary" "cor.") -3)
-                      ("proposition" ?h "prop:" "~\\ref{%s}" t ("proposition" "prop.") -3)
-                      ("lemma"       ?h "lemma:" "~\\ref{%s}" t ("lemma" "lemma.") -3))))
+         (setq reftex-plug-into-AUCTeX t
+               reftex-label-alist
+               '(("axiom"       ?a "ax:"  "~\\ref{%s}" nil ("axiom"   "ax.") -2)
+                 ("theorem"     ?h "thm:" "~\\ref{%s}" t ("theorem" "thm.") -3)
+                 ("restatable"  ?h "thm:" "~\\ref{%s}" t ("theorem" "thm.") -3)
+                 ("thmenum"     ?h "thm:" "~\\ref{%s}" t ("theorem" "thm.") -3)
+                 ("corollary"   ?h "cor:" "~\\ref{%s}" t ("corollary" "cor.") -3)
+                 ("proposition" ?h "prop:" "~\\ref{%s}" t ("proposition" "prop.") -3)
+                 ("lemma"       ?h "lemma:" "~\\ref{%s}" t ("lemma" "lemma.") -3))))
        :config (add-hook 'LaTeX-mode-hook #'jms/LaTeX-init))
 
      (defun jms/LaTeX-init ()
        (flyspell-mode)
        (flyspell-buffer)
        (LaTeX-math-mode)
+       (TeX-source-correlate-mode)
        (turn-on-reftex)
 
        (LaTeX-add-environments
@@ -1050,6 +1053,11 @@ code. Nevertheless, thanks to the original authors!
              (newline-and-indent)
              (insert "&"))
          (newline-and-indent)))
+     (defun jms/synctex-sync-command (file line)
+       (interactive)
+       (progn
+         (find-file file)
+         (goto-line line)))
    #+END_SRC
 
 ** Org
