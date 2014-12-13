@@ -1002,6 +1002,8 @@ code. Nevertheless, thanks to the original authors!
        :config (add-hook 'LaTeX-mode-hook #'jms/LaTeX-init))
 
      (defun jms/LaTeX-init ()
+       (bind-key "C-c C-i" 'jms/TeX-insert-todo LaTeX-mode-map)
+
        (flyspell-mode)
        (flyspell-buffer)
        (LaTeX-math-mode)
@@ -1053,6 +1055,35 @@ code. Nevertheless, thanks to the original authors!
              (newline-and-indent)
              (insert "&"))
          (newline-and-indent)))
+
+     (defvar jms/TeX-todo-macros-alist
+       '(("todo"    . ("todo" . "itodo"))
+         ("new"     . ("todonew" . "itodonew"))
+         ("ref"     . ("todoref" . "itodoref"))
+         ("clarify" . ("todoclarify" . "itodoclarify"))
+         ("unsure"  . ("todounsure" . "itodounsure"))
+         ("rewrite" . ("todorewrite" . "itodorewrite"))
+         ("style"   . ("todostyle" . "itodostyle")))
+
+       "A mapping of LaTeX \"todo\" macro names.
+
+     Containins pairs (NAME . (MACRO . IMACRO)) where NAME is a mnemonic for use with `jms/TeX-insert-macro` and MACRO and IMACRO are names of the \"stand-alone\" and inline versions of the todo macro.
+
+     For use with the todo LaTeX package and my stylesheet.")
+
+     (defun jms/TeX-insert-todo (category &optional inline)
+       "Insert a \"todo\" macro. "
+       (interactive
+        (let ((categories '("todo" "new" "ref" "clarify" "unsure" "rewrite" "style")))
+          (list (ido-completing-read "Todo category: " categories)
+                (consp current-prefix-arg))))
+       (progn
+         (let ((macro (cdr-safe (assoc category jms/TeX-todo-macros-alist))))
+           (if macro
+               (TeX-insert-macro (if inline
+                                     (cdr macro)
+                                   (car macro)))))))
+
      (defun jms/synctex-sync-command (file line)
        (interactive)
        (progn
