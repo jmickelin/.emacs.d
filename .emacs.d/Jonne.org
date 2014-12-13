@@ -1076,7 +1076,7 @@ code. Nevertheless, thanks to the original authors!
 
      If the universal argument is given, insert the inline version instead."
        (interactive
-        (let ((categories '("todo" "new" "ref" "clarify" "unsure" "rewrite" "style")))
+        (let ((categories (mapcar #'car jms/TeX-todo-macros-alist)))
           (list (ido-completing-read "Todo category: " categories)
                 (consp current-prefix-arg))))
        (progn
