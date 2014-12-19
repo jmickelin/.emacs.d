@@ -1162,8 +1162,19 @@ code. Nevertheless, thanks to the original authors!
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
-     (defun org-insert-src-block (src-code-type)
-       "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+     (defun jms/org-insert-name-keyword (name)
+       "Query for `NAME' and insert '#+NAME: NAME' at point."
+       (interactive "sName: ")
+       (progn
+         (newline-and-indent)
+         (insert (format "#+NAME: %s\n" name))))
+
+     (defun jms/org-insert-src-block (src-code-type &optional prefix)
+       "Insert a `SRC-CODE-TYPE' type source code block in org-mode.
+
+     If called with a prefix argument, also query for a name and
+     insert a named code block. If called with a double prefix, make
+     the code block support noweb references."
        (interactive
         (let ((src-code-types
                '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
@@ -1171,16 +1182,30 @@ code. Nevertheless, thanks to the original authors!
                  "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
                  "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
                  "scheme" "sqlite")))
-          (list (ido-completing-read "Source code type: " src-code-types))))
+          (list (ido-completing-read "Source code type: " src-code-types)
+                (if (consp current-prefix-arg)
+                    (car current-prefix-arg)
+                  0))))
        (progn
+         (if (not (= prefix 4))
+             (newline-and-indent)
+           (call-interactively 'jms/org-insert-name-keyword)
+           (indent-according-to-mode))
+
+         (insert (format "#+BEGIN_SRC %s" src-code-type))
+         (when (= prefix 16)
+             (insert " :noweb yes"))
+
          (newline-and-indent)
-         (insert (format "#+BEGIN_SRC %s\n" src-code-type))
          (newline-and-indent)
+
          (insert "#+END_SRC\n")
+
          (previous-line 2)
          (org-edit-src-code)))
-     (bind-key "C-c s i" 'org-insert-src-block org-mode-map)
+     (bind-key "C-c s i" 'jms/org-insert-src-block org-mode-map)
    #+END_SRC
+
 ** Yaml
 
    #+BEGIN_SRC emacs-lisp
