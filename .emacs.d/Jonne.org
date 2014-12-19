@@ -799,11 +799,13 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (use-package projectile
        :ensure projectile
+       :defer t
        :init
-       (progn (projectile-global-mode)
-              (setq projectile-known-projects-file
-                    (expand-file-name "projectile-bookmarks.eld"
-                                      jms/var-directory))))
+       (progn
+         (setq projectile-known-projects-file
+               (expand-file-name "projectile-bookmarks.eld"
+                                 jms/var-directory))
+         (projectile-global-mode)))
    #+END_SRC
 
 * Version control
