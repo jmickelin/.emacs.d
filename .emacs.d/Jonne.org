@@ -1152,6 +1152,15 @@ code. Nevertheless, thanks to the original authors!
      (setq org-src-fontify-natively t)
    #+END_SRC
 
+   Set up the languages that should support tangling/execution.
+   #+BEGIN_SRC emacs-lisp
+     (setq  org-babel-load-languages '((emacs-lisp . t)
+                                       (shell . t)
+                                       (python . t)
+                                       (matlab . t)
+                                       (R . t)))
+   #+END_SRC
+
    #+BEGIN_SRC emacs-lisp
      (defun org-insert-src-block (src-code-type)
        "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
