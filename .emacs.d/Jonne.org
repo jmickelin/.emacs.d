@@ -986,6 +986,7 @@ code. Nevertheless, thanks to the original authors!
                TeX-view-program-selection '((output-pdf "zathura"))
 
                TeX-electric-sub-and-superscript t
+               TeX-electric-math '("$" . "$")
                TeX-fold-math-spec-list '(("∧" ("\land"))
                                          ("∨" ("\lor"))
                                          ("→" ("\implies"))
