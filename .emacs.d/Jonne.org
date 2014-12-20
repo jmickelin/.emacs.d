@@ -972,6 +972,18 @@ code. Nevertheless, thanks to the original authors!
                     'paredit-close-round))))
    #+END_SRC
 
+   For easy tracing.
+   #+BEGIN_SRC emacs-lisp
+     (defun p (arg)
+       "Pretty print in new temporary buffer."
+       (with-current-buffer (get-buffer-create "*log*")
+         (display-buffer (current-buffer))
+         (end-of-buffer)
+         (insert (pp arg))
+         (newline)))
+   #+END_SRC
+
+
 ** Latex
 
    #+BEGIN_SRC emacs-lisp
