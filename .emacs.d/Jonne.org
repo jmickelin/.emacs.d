@@ -384,7 +384,6 @@ code. Nevertheless, thanks to the original authors!
 
   #+BEGIN_SRC emacs-lisp
     (ido-mode t)
-    (ido-everywhere t)
     (setq ido-enable-flex-matching t
           ido-case-fold t
           ido-max-work-file-list 30
@@ -405,6 +404,16 @@ code. Nevertheless, thanks to the original authors!
     (use-package ido-vertical-mode
         :ensure ido-vertical-mode
         :init (ido-vertical-mode t))
+
+  #+END_SRC
+
+  Use ido /everywhere/.
+  #+BEGIN_SRC emacs-lisp
+    (ido-everywhere t)
+
+    (use-package ido-ubiquitous
+      :ensure ido-ubiquitous
+      :init (setq ido-ubiquitous-mode t))
   #+END_SRC
 
 * Input method
