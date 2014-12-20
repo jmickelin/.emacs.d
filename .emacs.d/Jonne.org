@@ -406,19 +406,20 @@ code. Nevertheless, thanks to the original authors!
   Rebind the default Agda prefix to ~§~ in order to not interfere with
   programming.
   #+BEGIN_SRC emacs-lisp
-    (use-package agda-input
+    (ignore-errors
+      (use-package agda-input
         :init (progn
                 (defadvice switch-to-buffer (after activate-input-method activate)
                   (activate-input-method "Agda"))
-    
-                
+
+
                 (setq agda-input-tweak-all '(agda-input-compose
                                              (agda-input-prepend "§")
                                              (agda-input-nonempty)))
                 (setq agda-input-user-translations '(("§" "§")))
                 ;; Make the settings have effect. Needed since we are not using
                 ;; customize.
-                (agda-input-setup)))
+                (agda-input-setup))))
   #+END_SRC
 
 * Locale and encoding
