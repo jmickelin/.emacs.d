@@ -1190,6 +1190,7 @@ code. Nevertheless, thanks to the original authors!
                                        (R . t)))
    #+END_SRC
 
+   Typing the ~#+BEGIN_SRC <lang>~ things manually is tedious.
    #+BEGIN_SRC emacs-lisp
      (defun jms/org-insert-name-keyword (name)
        "Query for `NAME' and insert '#+NAME: NAME' at point."
