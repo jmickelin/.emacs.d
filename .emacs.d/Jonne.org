@@ -1220,6 +1220,29 @@ code. Nevertheless, thanks to the original authors!
      (bind-key "C-c s i" 'jms/org-insert-src-block org-mode-map)
    #+END_SRC
 
+   Split a source code block intelligently.
+   #+BEGIN_SRC emacs-lisp
+     (defun jms/org-split-source-block ()
+       "End the source code block at point and open a new one with the
+     same header."
+       (interactive)
+       (let ((info (org-babel-get-src-block-info)))
+         (when info
+           (let* ((indent (nth 5 info))
+                  (beg (org-babel-where-is-src-block-head))
+                  (end (save-excursion (goto-char beg) (line-end-position)))
+                  (header (buffer-substring beg end)))
+             (newline)
+             (indent-to indent)
+             (insert "#+END_SRC")
+             (newline-and-indent)
+             (newline)
+             (insert header)
+             (previous-line)))))
+
+     (bind-key "M-S" 'jms/org-split-source-block org-mode-map)
+   #+END_SRC
+
 ** Yaml
 
    #+BEGIN_SRC emacs-lisp
