@@ -380,7 +380,9 @@ code. Nevertheless, thanks to the original authors!
     (add-hook 'dired-load-hook #'jms/dired-init)
   #+END_SRC
 
-* Ido
+* Ido and Helm
+  I use ido for most interaction with files and buffers, and Helm selectively
+  for some other things.
 
   #+BEGIN_SRC emacs-lisp
     (ido-mode t)
@@ -414,6 +416,13 @@ code. Nevertheless, thanks to the original authors!
     (use-package ido-ubiquitous
       :ensure ido-ubiquitous
       :init (setq ido-ubiquitous-mode t))
+  #+END_SRC
+
+  To enable Helm everywhere, use ~(helm-mode 1)~. I don't do this.
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm-config
+      :ensure helm
+      :init (setq helm-move-to-line-cycle-in-source t))
   #+END_SRC
 
 * Input method
@@ -709,6 +718,12 @@ code. Nevertheless, thanks to the original authors!
                           undo-tree-visualizer-relative-timestamps t
                           undo-tree-enable-undo-in-region nil)
                     (global-undo-tree-mode)))
+   #+END_SRC
+
+** Killing
+   Select entries from the kill ring.
+   #+BEGIN_SRC emacs-lisp
+     (bind-key "C-M-y" 'helm-show-kill-ring)
    #+END_SRC
 
 ** Palimpsest
