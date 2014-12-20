@@ -24,7 +24,7 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (setq jms/lib-directory (expand-file-name "lib" user-emacs-directory))
    #+END_SRC
-   
+
    Caches and similar go here.
    #+BEGIN_SRC emacs-lisp
      (setq jms/var-directory (expand-file-name "var" user-emacs-directory))
@@ -81,7 +81,7 @@ code. Nevertheless, thanks to the original authors!
 ** Package sources
 
    #+BEGIN_SRC emacs-lisp
-     (setq package-archives 
+     (setq package-archives
            '(("gnu" . "http://elpa.gnu.org/packages/")
              ("melpa" . "http://melpa.org/packages/")))
    #+END_SRC
@@ -120,7 +120,7 @@ code. Nevertheless, thanks to the original authors!
        (package-install 'use-package))
      (require 'use-package)
    #+END_SRC
-   
+
 ** Load private configuration
    All sensitive information is stored in a separate file.
    #+BEGIN_SRC emacs-lisp
@@ -147,7 +147,7 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (setq initial-major-mode 'org-mode
            initial-scratch-message "")
-     
+
      (defun jms/create-scratch-buffer nil
         "Jump to the scratch buffer and create one if it doesn't exist."
         (interactive)
@@ -176,12 +176,12 @@ code. Nevertheless, thanks to the original authors!
          :ensure exec-path-from-shell
          :init (exec-path-from-shell-initialize))
    #+END_SRC
-   
+
 ** Encryption
-   Add 
+   Add
    #+BEGIN_SRC text
      epa-file-enctypt-to: ; epa-file-cache-passphrase-for-symmetric-encryption: t
-   #+END_SRC  
+   #+END_SRC
    as file local variables to use symmetric encryption, and
    #+BEGIN_SRC text
      epa-file-encrypt-to: ("email@example.com")
@@ -192,7 +192,7 @@ code. Nevertheless, thanks to the original authors!
      (require 'epa-file)
      (epa-file-enable)
    #+END_SRC
-   
+
 ** Smex
    Smex provides an ido-like interface for ~M-x~.
    #+BEGIN_SRC emacs-lisp
@@ -209,7 +209,7 @@ code. Nevertheless, thanks to the original authors!
      (put 'narrow-to-region 'disabled nil)
      (put 'dired-find-alternate-file 'disabled nil)
      (put 'downcase-region 'disabled nil)
-   #+END_SRC   
+   #+END_SRC
 * Behaviour
 ** Faster keyecho for commands
    #+BEGIN_SRC emacs-lisp
@@ -234,9 +234,9 @@ code. Nevertheless, thanks to the original authors!
                          "C-x x"
                          "C-c p"
                          "C-c s"))
-     
+
                  (guide-key-mode 1)
-     
+
                  (setq guide-key/recursive-key-sequence-flag t)
                  (setq guide-key/popup-window-position 'bottom)))
    #+END_SRC
@@ -261,13 +261,13 @@ code. Nevertheless, thanks to the original authors!
     (use-package ibuffer
         :ensure ibuffer
         :bind ("C-x C-b" . ibuffer)
-        :config 
-        (progn 
+        :config
+        (progn
           (use-package ibuf-ext)
-    
+
           (use-package ibuffer-vc
               :ensure ibuffer-vc)
-    
+
           (setq jms/ibuffer-filter-groups
                 '(("*buffers*" (name . "^\\*.*\\*"))
                   ("Latex" (mode . latex-mode))))
@@ -279,7 +279,7 @@ code. Nevertheless, thanks to the original authors!
                       (append jms/ibuffer-filter-groups
                               (ibuffer-vc-generate-filter-groups-by-vc-root)))
                 (ibuffer-update nil t)))
-    
+
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
           ;; Change the ordering of the filter groups. This must be done as an ;;
           ;; advice, since the ordering in ibuffer-filter-groups also defines  ;;
@@ -288,10 +288,10 @@ code. Nevertheless, thanks to the original authors!
           ;; ibuffer-generate-filter-groups, so we need to compute the reverse ;;
           ;; ordering.                                                         ;;
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    
+
           ;; Returns the precedence of a group given it's name. The lower the
           ;; precedence, the higher the position.
-    
+
           ;; ibuffer-vc names it's groups as follows:
           ;;   (format "%s:%s" (symbol-name backend) root-dir)
           ;; where backend is a backend supported by vc and
@@ -308,10 +308,10 @@ code. Nevertheless, thanks to the original authors!
                   ((string= "Latex" group-name) 50)
                   ((string= "*buffers*" group-name) 9999)
                   (t 45)))
-    
+
           ;; Sort lexicographically on the precedence followed by the natural
           ;; string ordering.
-    
+
           (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
                                                            activate)
             (setq ad-return-value
@@ -324,9 +324,9 @@ code. Nevertheless, thanks to the original authors!
                                       (if (= p1 p2)
                                           (string< id1 id2)
                                           (< p1 p2))))))))
-    
+
           (setq ibuffer-formats
-                '((mark modified read-only " " 
+                '((mark modified read-only " "
                    (name 25 25 :left :elide)
                    " "
                    ;(size 9 -1 :right)
@@ -339,7 +339,7 @@ code. Nevertheless, thanks to the original authors!
   #+END_SRC
 
 ** Uniquify
-   
+
    #+BEGIN_SRC emacs-lisp
      (use-package uniquify
        :init (setq uniquify-buffer-name-style 'post-forward
@@ -347,36 +347,36 @@ code. Nevertheless, thanks to the original authors!
    #+END_SRC
 
 * Dired
-  
+
   #+BEGIN_SRC emacs-lisp
     (use-package dired-x
         :init (add-hook 'dired-load-hook (lambda ()
                                            (load "dired-x"))))
-    
+
     (use-package dired+
         :ensure dired+
         :init
-        (add-hook 'dired-load-hook 
+        (add-hook 'dired-load-hook
                   (lambda ()
                     (bind-key "d" 'diredp-dired-files ctl-x-map)
                     (bind-key "d" 'diredp-dired-files-other-window ctl-x-4-map)
                     (setq diredp-wrap-around-flags))))
-    
+
     (use-package dired-details
         :ensure dired-details
         :init (progn
                 (setq-default dired-details-hidden-string "--- ")
                 (dired-details-install)))
-    
+
     (defun jms/dired-init ()
       ;; Dired mixes normal files and dotfiles. Since I couldn't figure
       ;; out how to fix this, we count dotfiles as boring.
       (dired-omit-mode 1)
       (setq dired-omit-files (concat dired-omit-files "\\|^\\.[^\\.]+$"))
-    
+
       ;; Sort directories first, then by by extension.
       (setq dired-listing-switches "-lXGh --group-directories-first"))
-    
+
     (add-hook 'dired-load-hook #'jms/dired-init)
   #+END_SRC
 
@@ -432,7 +432,7 @@ code. Nevertheless, thanks to the original authors!
            calendar-month-name-array ["Januari" "Februari" "Mars" "April" "Maj"
                                                 "Juni" "Juli" "Augusti" "September"
                                                 "Oktober" "November" "December"])
-     
+
    #+END_SRC
 
 ** Use UTF-8 for everything
@@ -458,7 +458,7 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (setq history-length 250)
    #+END_SRC
-   
+
 * Privacy
 ** Clear the kill ring
 
@@ -502,7 +502,7 @@ code. Nevertheless, thanks to the original authors!
 ** Write time stamps when saving files
    For things not under version control.
 
-   Add the following template near the top of a file: 
+   Add the following template near the top of a file:
    #+BEGIN_SRC text
      Time-stamp: <>
    #+END_SRC
@@ -550,7 +550,7 @@ code. Nevertheless, thanks to the original authors!
          :ensure auto-complete
          :init (progn
                  (ac-config-default)
-                 (setq ac-comphist-file (expand-file-name "ac-comphist.dat" 
+                 (setq ac-comphist-file (expand-file-name "ac-comphist.dat"
                                                           jms/var-directory))
                  (bind-key "C-n" 'ac-next ac-complete-mode-map)
                  (bind-key "C-p" 'ac-previous ac-complete-mode-map)))
@@ -562,7 +562,7 @@ code. Nevertheless, thanks to the original authors!
          :ensure ido-at-point
          :init (ido-at-point-mode))
    #+END_SRC
-   
+
 ** Put the name of the current file in the kill ring.
 
    #+BEGIN_SRC emacs-lisp
@@ -582,14 +582,14 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (defun jms/insert-file-name (filename &optional args)
        "Insert name of file FILENAME into buffer after point.
-       
+
        Prefixed with \\[universal-argument], expand the file name to
        its fully canocalized path.  See `expand-file-name'.
-       
+
        Prefixed with \\[negative-argument], use relative path to file
        name from current directory, `default-directory'.  See
        `file-relative-name'.
-       
+
        The default with no prefix is to insert the file name exactly as
        it appears in the minibuffer prompt."
        ;; Based on insert-file in Emacs -- ashawley 20080926
@@ -600,7 +600,7 @@ code. Nevertheless, thanks to the original authors!
               (insert (expand-file-name filename)))
              (t
               (insert filename))))
-     
+
      (bind-key "C-c i" 'jms/insert-file-name)
    #+END_SRC
 
@@ -624,13 +624,13 @@ code. Nevertheless, thanks to the original authors!
          :bind (("C-S-c C-S-c" . mc/edit-lines)
                 ("C-S-c C-e"   . mc/edit-ends-of-lines)
                 ("C-S-c C-a"   . mc/edit-beginnings-of-lines)
-     
+
                 ("M-ä" . mc/mark-all-dwim)
                 ("C-å" . mc/mark-previous-like-this)
                 ("C-ä" . mc/mark-next-like-this)
                 ("C-Ä" . mc/mark-more-like-this-extended)
                 ("M-å" . mc/mark-all-in-region)
-     
+
                 ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
    #+END_SRC
 
@@ -699,7 +699,7 @@ code. Nevertheless, thanks to the original authors!
    #+END_SRC
 
 ** Yasnippets
-   
+
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet
      :ensure yasnippet
@@ -758,7 +758,7 @@ code. Nevertheless, thanks to the original authors!
        (use-package outline-magic
          :ensure outline-magic
          :init (bind-key "<f10>" 'outline-cycle outline-minor-mode-map)))
-     
+
      (set-display-table-slot
       standard-display-table
       'selective-display
@@ -865,9 +865,9 @@ code. Nevertheless, thanks to the original authors!
 ** C
 
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'c-mode-common-hook '(lambda () 
+     (add-hook 'c-mode-common-hook '(lambda ()
                                      (c-toggle-auto-newline 1)
-                                     (setq c-default-style "linux" 
+                                     (setq c-default-style "linux"
                                            c-basic-offset 4)))
    #+END_SRC
 
@@ -960,7 +960,7 @@ code. Nevertheless, thanks to the original authors!
          :init (progn
                  (mapcar (lambda (hook) (add-hook hook #'enable-paredit-mode))
                   '(emacs-lisp-mode-hook
-                    eval-expression-minibuffer-setup-hook 
+                    eval-expression-minibuffer-setup-hook
                     ielm-mode-hook
                     lisp-mode-hook
                     lisp-interaction-mode-hook
@@ -1021,7 +1021,7 @@ code. Nevertheless, thanks to the original authors!
         '("proposition" LaTeX-env-label)
         '("lemma" LaTeX-env-label))
 
-       (eval-after-load "tex" 
+       (eval-after-load "tex"
          '(setcdr (assoc "LaTeX" TeX-command-list)
                   '("%`%l%(mode) -shell-escape%' %t"
                     TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX")))
@@ -1115,7 +1115,7 @@ code. Nevertheless, thanks to the original authors!
 *** Capturing
    #+BEGIN_SRC emacs-lisp
      (bind-key "C-M-r" 'org-capture)
-     (setappendq org-capture-templates 
+     (setappendq org-capture-templates
                  `(("t" "Todo" entry
                     (file+headline ,(expand-file-name "todo.org"
                                                       jms/note-directory)
@@ -1149,7 +1149,7 @@ code. Nevertheless, thanks to the original authors!
                                      jms/note-directory)))
     #+END_SRC
 
-*** Babel   
+*** Babel
    #+BEGIN_SRC emacs-lisp
      (setq org-src-fontify-natively t)
    #+END_SRC
@@ -1222,7 +1222,7 @@ code. Nevertheless, thanks to the original authors!
     (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
     (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   #+END_SRC
-  
+
 ** Change cursor color according to mode (overwrite, insert, read-only)
   #+BEGIN_SRC emacs-lisp
     (setq jms/set-cursor-color-color "")
@@ -1277,14 +1277,14 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (use-package git-gutter-fringe
          :ensure git-gutter-fringe
-         :init (progn 
+         :init (progn
                  (global-git-gutter-mode t)
                  (set-face-foreground 'git-gutter-fr:modified "dark orange")
                  (set-face-foreground 'git-gutter-fr:added    "dark green")
                  (set-face-foreground 'git-gutter-fr:deleted  "dark red")
-     
+
                  (setq git-gutter-fr:side 'right-fringe)
-     
+
                  (fringe-helper-define 'git-gutter-fr:modified nil
                    "XXXXXXXX"
                    "XXXXXXXX"
@@ -1294,7 +1294,7 @@ code. Nevertheless, thanks to the original authors!
                    "XXXXXXXX"
                    "XXXXXXXX"
                    "XXXXXXXX")
-     
+
                  (fringe-helper-define 'git-gutter-fr:added nil
                    "...XX..."
                    "...XX..."
@@ -1304,7 +1304,7 @@ code. Nevertheless, thanks to the original authors!
                    "...XX..."
                    "...XX..."
                    "...XX...")
-     
+
                  (fringe-helper-define 'git-gutter-fr:deleted nil
                    "........"
                    "........"
@@ -1445,5 +1445,3 @@ code. Nevertheless, thanks to the original authors!
          :inherit 'mode-line-position-face
          :foreground "black" :background "#eab700")
    #+END_SRC
-
-
