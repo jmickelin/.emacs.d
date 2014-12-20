@@ -391,11 +391,17 @@ code. Nevertheless, thanks to the original authors!
           ido-save-directory-list-file (expand-file-name
                                         "ido.last"
                                         jms/var-directory))
-    
+  #+END_SRC
+
+  Ido completion for imenu.
+  #+BEGIN_SRC emacs-lisp
     (use-package idomenu
         :ensure idomenu
         :bind ("M-i" . idomenu))
-    
+  #+END_SRC
+
+  Show the list of possible completions vertically.
+  #+BEGIN_SRC emacs-lisp
     (use-package ido-vertical-mode
         :ensure ido-vertical-mode
         :init (ido-vertical-mode t))
