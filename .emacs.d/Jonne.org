@@ -898,8 +898,9 @@ code. Nevertheless, thanks to the original authors!
 ** Agda
 
    #+BEGIN_SRC emacs-lisp
-     (load-file (let ((coding-system-for-read 'utf-8))
-                  (shell-command-to-string "agda-mode locate")))
+     (ignore-errors
+       (load-file (let ((coding-system-for-read 'utf-8))
+                    (shell-command-to-string "agda-mode locate"))))
 
      (setq agda2-include-dirs
            (list "."
