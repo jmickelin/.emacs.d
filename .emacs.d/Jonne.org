@@ -1316,6 +1316,11 @@ code. Nevertheless, thanks to the original authors!
     (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   #+END_SRC
 
+  Never use dialog boxes.
+  #+BEGIN_SRC emacs-lisp
+    (setq use-dialog-box nil)
+  #+END_SRC
+
 ** Change cursor color according to mode (overwrite, insert, read-only)
   #+BEGIN_SRC emacs-lisp
     (setq jms/set-cursor-color-color "")
