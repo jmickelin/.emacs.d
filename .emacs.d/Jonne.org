@@ -726,6 +726,14 @@ code. Nevertheless, thanks to the original authors!
      (bind-key "n" 'flyspell-check-next-highlighted-word spelling-map)
 
    #+END_SRC
+** Indicate end of buffer
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package vim-empty-lines-mode
+       :ensure vim-empty-lines-mode
+       :init (global-vim-empty-lines-mode))
+   #+END_SRC
+
 ** Undo
    Undo tree.
    #+BEGIN_SRC emacs-lisp
@@ -907,8 +915,9 @@ code. Nevertheless, thanks to the original authors!
 ** Agda
 
    #+BEGIN_SRC emacs-lisp
-     (load-file (let ((coding-system-for-read 'utf-8))
-                  (shell-command-to-string "agda-mode locate")))
+     (ignore-errors
+       (load-file (let ((coding-system-for-read 'utf-8))
+                    (shell-command-to-string "agda-mode locate"))))
 
      (setq agda2-include-dirs
            (list "."
