@@ -1048,7 +1048,7 @@ code. Nevertheless, thanks to the original authors!
                TeX-pare-self t
                TeX-PDF-mode t
                TeX-view-program-list '(("zathura"
-                                        "zathura --fork -s -x \"emacsclient --eval '(jms/synctex-sync-command \"'\"'%{input}'\"'\" %{line})'\" %o"))
+                                        "zathura --fork -x \"emacsclient --eval '(jms/synctex-sync-command \"'\"'%{input}'\"'\" %{line})'\" %o"))
                TeX-view-program-selection '((output-pdf "zathura"))
 
                TeX-electric-sub-and-superscript t
