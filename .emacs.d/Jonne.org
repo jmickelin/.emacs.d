@@ -1206,6 +1206,9 @@ code. Nevertheless, thanks to the original authors!
       (use-package org-protocol)
     #+END_SRC
 
+    Apparently, if ~org-capture~ is called with a universal prefix it
+    opens the capture file without adding anything, so we could also
+    use ~C-u M-x org-capture RET w~ to go to the bookmarks file.
     #+BEGIN_SRC emacs-lisp
       (defun find-browser-bookmarks ()
         "Open the browser bookmark file."
