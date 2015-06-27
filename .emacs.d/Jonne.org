@@ -23,6 +23,8 @@ code. Nevertheless, thanks to the original authors!
    Packages not handled through ~package.el~ are stored here.
    #+BEGIN_SRC emacs-lisp
      (setq jms/lib-directory (expand-file-name "lib" user-emacs-directory))
+     (when (not (file-exists-p jms/lib-directory))
+       (make-directory jms/lib-directory))
    #+END_SRC
 
    Caches and similar go here.
