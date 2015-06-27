@@ -953,6 +953,14 @@ code. Nevertheless, thanks to the original authors!
                                            c-basic-offset 4)))
    #+END_SRC
 
+** Erlang
+   #+BEGIN_SRC emacs-lisp
+     (use-package erlang-mode
+       :ensure erlang
+       :mode ("\\.[e\|h]rl" . erlang-mode)
+       :init (require 'erlang-start))
+   #+END_SRC
+
 ** Haskell
 
    #+BEGIN_SRC emacs-lisp
