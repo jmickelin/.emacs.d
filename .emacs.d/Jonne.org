@@ -905,6 +905,13 @@ code. Nevertheless, thanks to the original authors!
      (auto-image-file-mode t)
    #+END_SRC
 
+** Eshell
+
+   #+BEGIN_SRC emacs-lisp
+     (after 'esh-opt
+       (setq eshell-directory-name (expand-file-name "eshell" jms/var-directory)))
+   #+END_SRC
+
 ** External
 
    #+BEGIN_SRC emacs-lisp
