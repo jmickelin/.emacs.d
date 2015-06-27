@@ -725,6 +725,7 @@ code. Nevertheless, thanks to the original authors!
 
    #+BEGIN_SRC emacs-lisp
      (use-package vim-empty-lines-mode
+       :disabled t
        :ensure vim-empty-lines-mode
        :init (global-vim-empty-lines-mode))
    #+END_SRC
