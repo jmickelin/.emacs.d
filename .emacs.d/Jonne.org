@@ -501,6 +501,15 @@ code. Nevertheless, thanks to the original authors!
      (bind-key "C-x C-r" 'ido-recentf-open)
    #+END_SRC
 
+** Save place in files
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'saveplace)
+     (setq-default save-place t)
+     (setq save-place-file (expand-file-name "places" jms/var-directory))
+
+   #+END_SRC
+
 
 * Privacy
 ** Clear the kill ring
