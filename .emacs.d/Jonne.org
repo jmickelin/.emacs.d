@@ -886,7 +886,13 @@ code. Nevertheless, thanks to the original authors!
        :bind ("C-M-g" . magit-status))
    #+END_SRC
 
-* Applications
+* Applications and utilities
+** Bookmarks
+
+   #+BEGIN_SRC emacs-lisp
+     (setq bookmark-default-file (expand-file-name "bookmarks" jms/var-directory))
+   #+END_SRC
+
 ** Docview
 
    #+BEGIN_SRC emacs-lisp
