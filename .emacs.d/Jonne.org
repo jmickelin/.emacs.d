@@ -1202,6 +1202,14 @@ code. Nevertheless, thanks to the original authors!
          (goto-line line)))
    #+END_SRC
 
+** Markdown
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package gfm-mode
+       :ensure markdown-mode
+       :mode ("\\.md\\'" . gfm-mode))
+   #+END_SRC
+
 ** Org
 
    #+BEGIN_SRC emacs-lisp
