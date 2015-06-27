@@ -737,6 +737,12 @@ code. Nevertheless, thanks to the original authors!
      (bind-key "C-M-y" 'helm-show-kill-ring)
    #+END_SRC
 
+** Scrolling
+
+   #+BEGIN_SRC emacs-lisp
+     (setq scroll-error-top-bottom t)
+   #+END_SRC
+
 ** Palimpsest
 
    #+BEGIN_SRC emacs-lisp
