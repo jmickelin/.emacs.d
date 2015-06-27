@@ -740,10 +740,16 @@ code. Nevertheless, thanks to the original authors!
                     (global-undo-tree-mode)))
    #+END_SRC
 
-** Killing
+** Killing and yanking
    Select entries from the kill ring.
    #+BEGIN_SRC emacs-lisp
      (bind-key "C-M-y" 'helm-show-kill-ring)
+   #+END_SRC
+
+   Save clipboard's content into the kill ring before overwriting it
+   with a kill from within Emacs.
+   #+BEGIN_SRC emacs-lisp
+     (setq save-interprogram-paste-before-kill t)
    #+END_SRC
 
 ** Scrolling
