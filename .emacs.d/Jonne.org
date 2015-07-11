@@ -168,6 +168,23 @@ code. Nevertheless, thanks to the original authors!
      (setq auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-"
                                                         jms/var-directory))
    #+END_SRC
+   Don't create backups of sensitive files!
+   #+BEGIN_SRC emacs-lisp
+     (defvar jms/backup-ignore-regexps (list "^/dev/shm/pass.*" ; pass creates files here
+                                            "\\.gpg$")
+       "*List of filename regexps to not backup")
+
+     (defun jms/backup-enable-p (name)
+       "Filter certain file backups"
+       (when (normal-backup-enable-predicate name)
+         (let ((backup t))
+           (mapc (lambda (re)
+                   (setq backup (and backup (not (string-match re name)))))
+                 jms/backup-ignore-regexps)
+           backup)))
+
+     (setq backup-enable-predicate 'jms/backup-enable-p)
+   #+END_SRC
 
 ** Path
    The following package inherits the ~PATH~ and ~MANPATH~ environment
@@ -1090,7 +1107,7 @@ code. Nevertheless, thanks to the original authors!
                TeX-pare-self t
                TeX-PDF-mode t
                TeX-view-program-list '(("zathura"
-                                        "zathura --fork -s -x \"emacsclient --eval '(jms/synctex-sync-command \"'\"'%{input}'\"'\" %{line})'\" %o"))
+                                        "zathura --fork -x \"emacsclient --eval '(jms/synctex-sync-command \"'\"'%{input}'\"'\" %{line})'\" %o"))
                TeX-view-program-selection '((output-pdf "zathura"))
 
                TeX-electric-sub-and-superscript t
@@ -1256,6 +1273,9 @@ code. Nevertheless, thanks to the original authors!
       (use-package org-protocol)
     #+END_SRC
 
+    Apparently, if ~org-capture~ is called with a universal prefix it
+    opens the capture file without adding anything, so we could also
+    use ~C-u M-x org-capture RET w~ to go to the bookmarks file.
     #+BEGIN_SRC emacs-lisp
       (defun find-browser-bookmarks ()
         "Open the browser bookmark file."
@@ -1271,11 +1291,12 @@ code. Nevertheless, thanks to the original authors!
 
    Set up the languages that should support tangling/execution.
    #+BEGIN_SRC emacs-lisp
-     (setq  org-babel-load-languages '((emacs-lisp . t)
-                                       (shell . t)
-                                       (python . t)
-                                       (matlab . t)
-                                       (R . t)))
+     (org-babel-do-load-languages 'org-babel-load-languages
+                                  '((emacs-lisp . t)
+                                    (shell . t)
+                                    (python . t)
+                                    (matlab . t)
+                                    (R . t)))
    #+END_SRC
 
    Typing the ~#+BEGIN_SRC <lang>~ things manually is tedious.
@@ -1360,6 +1381,11 @@ code. Nevertheless, thanks to the original authors!
     (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
     (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
     (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+  #+END_SRC
+
+  Never use dialog boxes.
+  #+BEGIN_SRC emacs-lisp
+    (setq use-dialog-box nil)
   #+END_SRC
 
 ** Change cursor color according to mode (overwrite, insert, read-only)
