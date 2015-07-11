@@ -1004,17 +1004,17 @@ code. Nevertheless, thanks to the original authors!
 
          (add-hook 'haskell-mode-hook #'jms/haskell-init)
 
-         (bind-key "C-c C-l" 'haskell-process-load-file     haskell-mode-map)
-         (bind-key "C-c C-c" 'haskell-process-cabal-build   haskell-mode-map)
-         (bind-key "C-c C-z" 'haskell-interactive-switch    haskell-mode-map)
-         (bind-key "C-c c"   'haskell-cabal-visit-file      haskell-mode-map)
-         (bind-key "C-c C-t" 'haskell-process-do-type       haskell-mode-map)
-         (bind-key "C-c C-i" 'haskell-process-do-info       haskell-mode-map)
-         (bind-key "<SPC>"   'haskell-mode-contextual-space haskell-mode-map)
-         (bind-key "<f8>"    'haskell-navigate-imports      haskell-mode-map)
-         (bind-key "M-."     'haskell-mode-tag-find         haskell-mode-map)
-         (bind-key "C-c g"   'haskell-hoogle                haskell-mode-map)
-         (bind-key "C-`"     'haskell-interactive-bring     haskell-mode-map)))
+         (bind-key "C-c C-l" 'haskell-process-load-or-reload  haskell-mode-map)
+         (bind-key "C-c C-c" 'haskell-process-cabal-build     haskell-mode-map)
+         (bind-key "C-c C-z" 'haskell-interactive-switch      haskell-mode-map)
+         (bind-key "C-c c"   'haskell-cabal-visit-file        haskell-mode-map)
+         (bind-key "C-c C-t" 'haskell-process-do-type         haskell-mode-map)
+         (bind-key "C-c C-i" 'haskell-process-do-info         haskell-mode-map)
+         (bind-key "<SPC>"   'haskell-mode-contextual-space   haskell-mode-map)
+         (bind-key "<f8>"    'haskell-navigate-imports        haskell-mode-map)
+         (bind-key "M-."     'haskell-mode-tag-find           haskell-mode-map)
+         (bind-key "C-c g"   'haskell-hoogle                  haskell-mode-map)
+         (bind-key "C-`"     'haskell-interactive-bring       haskell-mode-map)))
 
      (defun jms/haskell-init ()
        (after 'auto-complete
