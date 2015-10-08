@@ -1237,6 +1237,18 @@ code. Nevertheless, thanks to the original authors!
      (bind-key "C-c b" 'org-iswitchb)
    #+END_SRC
 
+   Use speed commands to avoid arrow keys. Press =?= on the beginning
+   of a headline (before the stars) to show a help text.
+   #+BEGIN_SRC emacs-lisp
+     (setq org-use-speed-commands t)
+   #+END_SRC
+
+   Use org-indent-mode.
+   #+BEGIN_SRC emacs-lisp
+     (setq org-startup-indented t)
+   #+END_SRC
+
+
 *** Capturing
    #+BEGIN_SRC emacs-lisp
      (bind-key "C-M-r" 'org-capture)
