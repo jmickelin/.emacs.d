@@ -1298,7 +1298,6 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (org-babel-do-load-languages 'org-babel-load-languages
                                   '((emacs-lisp . t)
-                                    (shell . t)
                                     (python . t)
                                     (matlab . t)
                                     (R . t)))
