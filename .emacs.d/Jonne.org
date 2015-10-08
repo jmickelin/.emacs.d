@@ -1007,12 +1007,6 @@ code. Nevertheless, thanks to the original authors!
                    '((candidates . (hc-ac-haskell-candidates ac-prefix)))))
 
 
-               (use-package shm
-                 :ensure shm
-                 :init (progn
-                         (set-face-background 'shm-current-face "#eee8d5")
-                         (set-face-background 'shm-quarantine-face "light blue")))
-
                (use-package ghc
                  :ensure ghc))
 
@@ -1041,8 +1035,6 @@ code. Nevertheless, thanks to the original authors!
        (turn-on-haskell-indent)
 
        (turn-on-haskell-doc-mode)
-
-       (structured-haskell-mode)
 
        (ghc-init))
    #+END_SRC
