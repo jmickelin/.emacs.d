@@ -383,9 +383,9 @@ code. Nevertheless, thanks to the original authors!
 
     (use-package dired-details
         :ensure dired-details
-        :init (progn
-                (setq-default dired-details-hidden-string "--- ")
-                (dired-details-install)))
+        :config (progn
+                  (setq-default dired-details-hidden-string "--- ")
+                  (dired-details-install)))
 
     (defun jms/dired-init ()
       ;; Dired mixes normal files and dotfiles. Since I couldn't figure
@@ -451,18 +451,18 @@ code. Nevertheless, thanks to the original authors!
   #+BEGIN_SRC emacs-lisp
     (ignore-errors
       (use-package agda-input
-        :init (progn
-                (defadvice switch-to-buffer (after activate-input-method activate)
-                  (activate-input-method "Agda"))
+        :config (progn
+                  (defadvice switch-to-buffer (after activate-input-method activate)
+                    (activate-input-method "Agda"))
 
 
-                (setq agda-input-tweak-all '(agda-input-compose
-                                             (agda-input-prepend "§")
-                                             (agda-input-nonempty)))
-                (setq agda-input-user-translations '(("§" "§")))
-                ;; Make the settings have effect. Needed since we are not using
-                ;; customize.
-                (agda-input-setup))))
+                  (setq agda-input-tweak-all '(agda-input-compose
+                                               (agda-input-prepend "§")
+                                               (agda-input-nonempty)))
+                  (setq agda-input-user-translations '(("§" "§")))
+                  ;; Make the settings have effect. Needed since we are not using
+                  ;; customize.
+                  (agda-input-setup))))
   #+END_SRC
 
 * Locale and encoding
@@ -593,12 +593,12 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (use-package smartscan
        :ensure smartscan
-       :init (progn
-               (unbind-key "M-p" smartscan-map)
-               (unbind-key "M-n" smartscan-map)
-               (bind-key "C-c n n" 'smartscan-symbol-go-forward smartscan-map)
-               (bind-key "C-c n p" 'smartscan-symbol-go-backward smartscan-map)
-               (global-smartscan-mode t)))
+       :config (progn
+                 (unbind-key "M-p" smartscan-map)
+                 (unbind-key "M-n" smartscan-map)
+                 (bind-key "C-c n n" 'smartscan-symbol-go-forward smartscan-map)
+                 (bind-key "C-c n p" 'smartscan-symbol-go-backward smartscan-map)
+                 (global-smartscan-mode t)))
    #+END_SRC
 
 ** Autocompletion
@@ -1434,50 +1434,50 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (use-package git-gutter-fringe
          :ensure git-gutter-fringe
-         :init (progn
-                 (global-git-gutter-mode t)
-                 (set-face-foreground 'git-gutter-fr:modified "dark orange")
-                 (set-face-foreground 'git-gutter-fr:added    "dark green")
-                 (set-face-foreground 'git-gutter-fr:deleted  "dark red")
+         :config (progn
+                   (global-git-gutter-mode t)
+                   (set-face-foreground 'git-gutter-fr:modified "dark orange")
+                   (set-face-foreground 'git-gutter-fr:added    "dark green")
+                   (set-face-foreground 'git-gutter-fr:deleted  "dark red")
 
-                 (setq git-gutter-fr:side 'right-fringe)
+                   (setq git-gutter-fr:side 'right-fringe)
 
-                 (fringe-helper-define 'git-gutter-fr:modified nil
-                   "XXXXXXXX"
-                   "XXXXXXXX"
-                   "XXXXXXXX"
-                   "XXXXXXXX"
-                   "XXXXXXXX"
-                   "XXXXXXXX"
-                   "XXXXXXXX"
-                   "XXXXXXXX")
+                   (fringe-helper-define 'git-gutter-fr:modified nil
+                     "XXXXXXXX"
+                     "XXXXXXXX"
+                     "XXXXXXXX"
+                     "XXXXXXXX"
+                     "XXXXXXXX"
+                     "XXXXXXXX"
+                     "XXXXXXXX"
+                     "XXXXXXXX")
 
-                 (fringe-helper-define 'git-gutter-fr:added nil
-                   "...XX..."
-                   "...XX..."
-                   "...XX..."
-                   "XXXXXXXX"
-                   "XXXXXXXX"
-                   "...XX..."
-                   "...XX..."
-                   "...XX...")
+                   (fringe-helper-define 'git-gutter-fr:added nil
+                     "...XX..."
+                     "...XX..."
+                     "...XX..."
+                     "XXXXXXXX"
+                     "XXXXXXXX"
+                     "...XX..."
+                     "...XX..."
+                     "...XX...")
 
-                 (fringe-helper-define 'git-gutter-fr:deleted nil
-                   "........"
-                   "........"
-                   "XXXXXXXX"
-                   "XXXXXXXX"
-                   "XXXXXXXX"
-                   "........"
-                   "........"
-                   "........")))
+                   (fringe-helper-define 'git-gutter-fr:deleted nil
+                     "........"
+                     "........"
+                     "XXXXXXXX"
+                     "XXXXXXXX"
+                     "XXXXXXXX"
+                     "........"
+                     "........"
+                     "........")))
    #+END_SRC
 
 ** Theme
   #+BEGIN_SRC emacs-lisp
     (use-package moe-theme
       :ensure moe-theme
-      :init (load-theme 'moe-light t))
+      :config (load-theme 'moe-light t))
   #+END_SRC
 ** Modeline
 
