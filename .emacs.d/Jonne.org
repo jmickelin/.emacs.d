@@ -947,7 +947,7 @@ code. Nevertheless, thanks to the original authors!
 
    #+BEGIN_SRC emacs-lisp
      (setq browse-url-browser-function 'browse-url-generic
-           browse-url-generic-program "/usr/bin/conkeror")
+           browse-url-generic-program "/usr/bin/firefox")
    #+END_SRC
 
 * Language
