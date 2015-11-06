@@ -424,8 +424,9 @@ code. Nevertheless, thanks to the original authors!
   #+BEGIN_SRC emacs-lisp
     (use-package ido-vertical-mode
         :ensure ido-vertical-mode
-        :init (ido-vertical-mode t))
-
+        :init (progn
+                (setq ido-vertical-define-keys t)
+                (ido-vertical-mode t)))
   #+END_SRC
 
   Use ido /everywhere/.
