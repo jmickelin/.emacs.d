@@ -952,7 +952,7 @@ Search for symbol at point using =C-u C-s=.
        :ensure deft
        :bind ("C-c o" . deft)
        :init (setq deft-text-mode 'org-mode
-                   deft-extension ".org"
+                   deft-default-extension "org"
                    deft-directory (expand-file-name "deft"
                                                     jms/note-directory)))
    #+END_SRC
