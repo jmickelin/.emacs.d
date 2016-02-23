@@ -780,6 +780,23 @@ code. Nevertheless, thanks to the original authors!
      (setq save-interprogram-paste-before-kill t)
    #+END_SRC
 
+** Searching
+Search for symbol at point using =C-u C-s=.
+
+#+BEGIN_SRC emacs-lisp
+  (defun jms/isearch-symbol-with-prefix (p)
+    "Like isearch, unless prefix argument is provided.
+  With a prefix argument P, isearch for the symbol at point."
+    (interactive "P")
+    (let ((current-prefix-arg nil))
+      (call-interactively
+       (if p #'isearch-forward-symbol-at-point
+         #'isearch-forward))))
+
+  (global-set-key [remap isearch-forward]
+                  #'jms/isearch-symbol-with-prefix)
+#+END_SRC
+
 ** Scrolling
 
    #+BEGIN_SRC emacs-lisp
