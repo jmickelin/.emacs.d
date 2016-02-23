@@ -1042,6 +1042,9 @@ Search for symbol at point using =C-u C-s=.
        :config
        (progn
 
+         (autoload 'ghc-init "ghc" nil t)
+         (autoload 'ghc-debug "ghc" nil t)
+
          (add-hook 'haskell-mode-hook #'jms/haskell-init)
 
          (bind-key "C-c C-l" 'haskell-process-load-or-reload  haskell-mode-map)
@@ -1063,7 +1066,7 @@ Search for symbol at point using =C-u C-s=.
 
        (turn-on-haskell-indent)
 
-       (turn-on-haskell-doc-mode)
+       (turn-on-haskell-doc)
 
        (ghc-init))
    #+END_SRC
