@@ -929,7 +929,8 @@ Search for symbol at point using =C-u C-s=.
      (use-package magit
        :ensure magit
        :bind ("C-M-g" . magit-status)
-       :config (setq magit-log-show-gpg-status t))
+       :config (setq magit-log-show-gpg-status t
+                     magit-commit-arguments '("--gpg-sign")))
    #+END_SRC
 
 * Applications and utilities
