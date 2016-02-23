@@ -1399,6 +1399,15 @@ Search for symbol at point using =C-u C-s=.
      (bind-key "M-S" 'jms/org-split-source-block org-mode-map)
    #+END_SRC
 
+
+** PKGBUILD
+
+#+BEGIN_SRC emacs-lisp
+  (use-package pkgbuild-mode
+    :ensure t
+    :mode (("/PKGBUILD$" . pkgbuild-mode)))
+#+END_SRC
+
 ** Yaml
 
    #+BEGIN_SRC emacs-lisp
