@@ -1037,7 +1037,11 @@ Search for symbol at point using =C-u C-s=.
 
 
                (use-package ghc
-                 :ensure ghc))
+                 :ensure ghc)
+
+               (use-package hindent
+                 :ensure hindent
+                 :config (setq hindent-style "chris-done")))
 
        :config
        (progn
@@ -1067,6 +1071,8 @@ Search for symbol at point using =C-u C-s=.
        (turn-on-haskell-indent)
 
        (turn-on-haskell-doc)
+
+       (hindent-mode)
 
        (ghc-init))
    #+END_SRC
