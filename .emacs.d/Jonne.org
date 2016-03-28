@@ -1418,6 +1418,49 @@ Search for symbol at point using =C-u C-s=.
     :mode (("/PKGBUILD$" . pkgbuild-mode)))
 #+END_SRC
 
+** Rust
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :ensure t
+
+    :mode (("\\.rs\\'" . rust-mode))
+
+    :init
+    (progn
+      ;; Source code nagigation and completion
+      (use-package racer
+        :ensure t
+        :init
+        (progn
+          (setq racer-cmd "/usr/bin/racer")
+          (setq racer-rust-src-path "/usr/src/rust/src")
+
+          (add-hook 'racer-mode-hook #'eldoc-mode))
+
+      (use-package ac-racer
+        :ensure t)
+
+      (use-package flycheck-rust
+        :ensure t
+        :config
+        (after 'flycheck
+          (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
+
+    :config
+    (progn
+      (add-hook 'rust-mode-hook #'jms/rust-init ))))
+
+  (defun jms/rust-init ()
+    (after 'auto-complete
+      (auto-complete-mode))
+
+    (after 'flycheck
+      (flycheck-mode))
+
+    (racer-mode))
+#+END_SRC
+
 ** Yaml
 
    #+BEGIN_SRC emacs-lisp
