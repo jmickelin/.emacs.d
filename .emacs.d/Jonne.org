@@ -1056,8 +1056,6 @@ Search for symbol at point using =C-u C-s=.
          (auto-complete-mode 1)
          (add-to-list 'ac-sources 'ac-source-haskell))
 
-       (turn-on-haskell-indent)
-
        (haskell-doc-mode)
 
        (hindent-mode)
