@@ -1039,6 +1039,10 @@ Search for symbol at point using =C-u C-s=.
                (use-package intero
                  :ensure t)
 
+               (use-package ebal
+                 :ensure t
+                 :init (setq ebal-operation-mode 'stack))
+
                (use-package hindent
                  :ensure hindent
                  :config (setq hindent-style "chris-done")))
@@ -1049,6 +1053,7 @@ Search for symbol at point using =C-u C-s=.
          (add-hook 'haskell-mode-hook #'jms/haskell-init)
 
          (bind-key "<f8>"    'haskell-navigate-imports        haskell-mode-map)
+         (bind-key "C-c C-c" 'ebal-execute                    haskell-mode-map)
          (bind-key "C-c g"   'haskell-hoogle                  haskell-mode-map)))
 
      (defun jms/haskell-init ()
