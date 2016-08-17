@@ -1070,7 +1070,7 @@ Search for symbol at point using =C-u C-s=.
 
        (turn-on-haskell-indent)
 
-       (turn-on-haskell-doc)
+       (haskell-doc-mode)
 
        (hindent-mode)
 
