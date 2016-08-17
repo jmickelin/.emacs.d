@@ -1036,8 +1036,8 @@ Search for symbol at point using =C-u C-s=.
                    '((candidates . (hc-ac-haskell-candidates ac-prefix)))))
 
 
-               (use-package ghc
-                 :ensure ghc)
+               (use-package intero
+                 :ensure t)
 
                (use-package hindent
                  :ensure hindent
@@ -1045,9 +1045,6 @@ Search for symbol at point using =C-u C-s=.
 
        :config
        (progn
-
-         (autoload 'ghc-init "ghc" nil t)
-         (autoload 'ghc-debug "ghc" nil t)
 
          (add-hook 'haskell-mode-hook #'jms/haskell-init)
 
@@ -1074,7 +1071,7 @@ Search for symbol at point using =C-u C-s=.
 
        (hindent-mode)
 
-       (ghc-init))
+       (intero-mode))
    #+END_SRC
 
 ** Idris
