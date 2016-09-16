@@ -1043,8 +1043,12 @@ Search for symbol at point using =C-u C-s=.
                    '((candidates . (hc-ac-haskell-candidates ac-prefix)))))
 
 
-               (use-package ghc
-                 :ensure ghc)
+               (use-package intero
+                 :ensure t)
+
+               (use-package ebal
+                 :ensure t
+                 :init (setq ebal-operation-mode 'stack))
 
                (use-package hindent
                  :ensure hindent
@@ -1053,35 +1057,22 @@ Search for symbol at point using =C-u C-s=.
        :config
        (progn
 
-         (autoload 'ghc-init "ghc" nil t)
-         (autoload 'ghc-debug "ghc" nil t)
-
          (add-hook 'haskell-mode-hook #'jms/haskell-init)
 
-         (bind-key "C-c C-l" 'haskell-process-load-or-reload  haskell-mode-map)
-         (bind-key "C-c C-c" 'haskell-process-cabal-build     haskell-mode-map)
-         (bind-key "C-c C-z" 'haskell-interactive-switch      haskell-mode-map)
-         (bind-key "C-c c"   'haskell-cabal-visit-file        haskell-mode-map)
-         (bind-key "C-c C-t" 'haskell-process-do-type         haskell-mode-map)
-         (bind-key "C-c C-i" 'haskell-process-do-info         haskell-mode-map)
-         (bind-key "<SPC>"   'haskell-mode-contextual-space   haskell-mode-map)
          (bind-key "<f8>"    'haskell-navigate-imports        haskell-mode-map)
-         (bind-key "M-."     'haskell-mode-tag-find           haskell-mode-map)
-         (bind-key "C-c g"   'haskell-hoogle                  haskell-mode-map)
-         (bind-key "C-`"     'haskell-interactive-bring       haskell-mode-map)))
+         (bind-key "C-c C-c" 'ebal-execute                    haskell-mode-map)
+         (bind-key "C-c g"   'haskell-hoogle                  haskell-mode-map)))
 
      (defun jms/haskell-init ()
        (after 'auto-complete
          (auto-complete-mode 1)
          (add-to-list 'ac-sources 'ac-source-haskell))
 
-       (turn-on-haskell-indent)
-
-       (turn-on-haskell-doc)
+       (haskell-doc-mode)
 
        (hindent-mode)
 
-       (ghc-init))
+       (intero-mode))
    #+END_SRC
 
 ** Idris
