@@ -934,6 +934,13 @@ Search for symbol at point using =C-u C-s=.
    #+END_SRC
 
 * Applications and utilities
+** Compilation
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multi-compile
+    :ensure t)
+#+END_SRC
+
 ** Bookmarks
 
    #+BEGIN_SRC emacs-lisp
@@ -1426,6 +1433,8 @@ Search for symbol at point using =C-u C-s=.
 
     :mode (("\\.rs\\'" . rust-mode))
 
+    :bind (("C-c C-c" . multi-compile-run))
+
     :init
     (progn
       ;; Source code nagigation and completion
@@ -1436,7 +1445,7 @@ Search for symbol at point using =C-u C-s=.
           (setq racer-cmd "/usr/bin/racer")
           (setq racer-rust-src-path "/usr/src/rust/src")
 
-          (add-hook 'racer-mode-hook #'eldoc-mode))
+          (add-hook 'racer-mode-hook #'eldoc-mode)))
 
       (use-package ac-racer
         :ensure t)
@@ -1445,15 +1454,23 @@ Search for symbol at point using =C-u C-s=.
         :ensure t
         :config
         (after 'flycheck
-          (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
+          (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+
+      (after 'multi-compile
+        (add-to-list 'multi-compile-alist
+                     '(rust-mode . (("rust-debug" . "cargo run")
+                                    ("rust-release" . "cargo run --release")
+                                    ("rust-test" . "cargo test"))))))
 
     :config
     (progn
-      (add-hook 'rust-mode-hook #'jms/rust-init ))))
+      (setq rust-indent-method-chain t)
+      (add-hook 'rust-mode-hook #'jms/rust-init )))
 
   (defun jms/rust-init ()
     (after 'auto-complete
-      (auto-complete-mode))
+      (auto-complete-mode)
+      (ac-racer-setup))
 
     (after 'flycheck
       (flycheck-mode))
