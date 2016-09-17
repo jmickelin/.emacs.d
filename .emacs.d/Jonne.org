@@ -1134,9 +1134,7 @@ Search for symbol at point using =C-u C-s=.
          (setq TeX-auto-save t
                TeX-pare-self t
                TeX-PDF-mode t
-               TeX-view-program-list '(("zathura"
-                                        "zathura --fork -x \"emacsclient --eval '(jms/synctex-sync-command \"'\"'%{input}'\"'\" %{line})'\" %o"))
-               TeX-view-program-selection '((output-pdf "zathura"))
+               TeX-view-program-selection '((output-pdf "Zathura"))
 
                TeX-electric-sub-and-superscript t
                TeX-electric-math '("$" . "$")
