@@ -85,7 +85,7 @@ code. Nevertheless, thanks to the original authors!
    #+BEGIN_SRC emacs-lisp
      (setq package-archives
            '(("gnu" . "http://elpa.gnu.org/packages/")
-             ("melpa" . "http://melpa.org/packages/")))
+             ("melpa" . "https://melpa.org/packages/")))
    #+END_SRC
 
 ** Loading packages
