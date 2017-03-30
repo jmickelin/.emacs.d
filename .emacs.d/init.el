@@ -1,6 +1,13 @@
 ;; In order to use more than one emacs configuration (which is useful
 ;; when converting my setup, for instance), we determine the
 ;; user-emacs-directory based on the location of the config file.
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+; (package-initialize)
+
 (setq jms/emacs-init-file load-file-name)
 (setq user-emacs-directory
       (file-name-directory jms/emacs-init-file))
