@@ -940,6 +940,13 @@ Search for symbol at point using =C-u C-s=.
    #+END_SRC
 
 * Applications and utilities
+** Compilation
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multi-compile
+    :ensure t)
+#+END_SRC
+
 ** Bookmarks
 
    #+BEGIN_SRC emacs-lisp
@@ -1140,9 +1147,7 @@ Search for symbol at point using =C-u C-s=.
          (setq TeX-auto-save t
                TeX-pare-self t
                TeX-PDF-mode t
-               TeX-view-program-list '(("zathura"
-                                        "zathura --fork -x \"emacsclient --eval '(jms/synctex-sync-command \"'\"'%{input}'\"'\" %{line})'\" %o"))
-               TeX-view-program-selection '((output-pdf "zathura"))
+               TeX-view-program-selection '((output-pdf "Zathura"))
 
                TeX-electric-sub-and-superscript t
                TeX-electric-math '("$" . "$")
@@ -1437,6 +1442,8 @@ Search for symbol at point using =C-u C-s=.
 
     :mode (("\\.rs\\'" . rust-mode))
 
+    :bind (("C-c C-c" . multi-compile-run))
+
     :init
     (progn
       ;; Source code nagigation and completion
@@ -1447,27 +1454,35 @@ Search for symbol at point using =C-u C-s=.
           (setq racer-cmd "/usr/bin/racer")
           (setq racer-rust-src-path "/usr/src/rust/src")
 
-          (add-hook 'racer-mode-hook #'eldoc-mode))
+          (add-hook 'racer-mode-hook #'eldoc-mode)))
 
         (use-package ac-racer
-          :ensure t)
-
-        (use-package flycheck-rust
-          :ensure t
-          :config
-          (after 'flycheck
-            (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
+          :ensure t))
 
       (use-package cargo
         :ensure t)
 
+      (use-package flycheck-rust
+        :ensure t
+        :config
+        (after 'flycheck
+          (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+
+      (after 'multi-compile
+        (add-to-list 'multi-compile-alist
+                     '(rust-mode . (("rust-debug" . "cargo run")
+                                    ("rust-release" . "cargo run --release")
+                                    ("rust-test" . "cargo test")))))
+
     :config
     (progn
-      (add-hook 'rust-mode-hook #'jms/rust-init ))))
+      (setq rust-indent-method-chain t)
+      (add-hook 'rust-mode-hook #'jms/rust-init )))
 
   (defun jms/rust-init ()
     (after 'auto-complete
-      (auto-complete-mode))
+      (auto-complete-mode)
+      (ac-racer-setup))
 
     (after 'flycheck
       (flycheck-mode))
