@@ -274,6 +274,12 @@ code. Nevertheless, thanks to the original authors!
      (unbind-key "M-l")
    #+END_SRC
 
+** Use C-SPC to repeat mark popping after initial C-u C-SPC
+
+#+BEGIN_SRC emacs-lisp
+  (setq set-mark-command-repeat-pop t)
+#+END_SRC
+
 * Buffers
 ** Ibuffer
   #+BEGIN_SRC emacs-lisp
