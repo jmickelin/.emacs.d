@@ -828,6 +828,17 @@ Search for symbol at point using =C-u C-s=.
        :init  (add-hook 'text-mode-hook 'palimpsest-mode))
    #+END_SRC
 
+** Query-replace with anzu-mode
+Use =anzu-mode= for improved query-replace behaviour.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package anzu
+    :ensure t
+    :config (global-anzu-mode)
+    :bind (("M-%" . anzu-query-replace)
+           ("C-M-%" . anzu-query-replace-regexp)))
+#+END_SRC
+
 ** Yasnippets
 
    #+BEGIN_SRC emacs-lisp
