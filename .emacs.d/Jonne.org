@@ -1031,7 +1031,7 @@ Search for symbol at point using =C-u C-s=.
        :init (progn
                (setq haskell-tags-on-save t
                      haskell-stylish-on-save t
-                     haskell-process-type 'stack-ghci
+                     haskell-process-type 'auto
                      haskell-process-suggest-remove-import-lines t
                      haskell-process-auto-import-loaded-modules t
                      haskell-process-log t)
