@@ -1472,6 +1472,8 @@ Search for symbol at point using =C-u C-s=.
     (after 'flycheck
       (flycheck-mode))
 
+    (add-hook 'before-save-hook #'rust-format-buffer nil t)
+
     (cargo-minor-mode)
 
     (racer-mode))
