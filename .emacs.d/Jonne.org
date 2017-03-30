@@ -1458,6 +1458,9 @@ Search for symbol at point using =C-u C-s=.
           (after 'flycheck
             (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
 
+      (use-package cargo
+        :ensure t)
+
     :config
     (progn
       (add-hook 'rust-mode-hook #'jms/rust-init ))))
@@ -1468,6 +1471,8 @@ Search for symbol at point using =C-u C-s=.
 
     (after 'flycheck
       (flycheck-mode))
+
+    (cargo-minor-mode)
 
     (racer-mode))
 #+END_SRC
