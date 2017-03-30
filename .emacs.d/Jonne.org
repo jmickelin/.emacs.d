@@ -103,7 +103,7 @@ code. Nevertheless, thanks to the original authors!
 
    Any site-local or similarly installed packages go here.
    #+BEGIN_SRC emacs-lisp
-     (add-to-list 'load-path (expand-file-name "~/.cabal/share/Agda-2.3.1/emacs-mode"))
+     (add-to-list 'load-path (expand-file-name "/usr/share/agda/emacs-mode"))
    #+END_SRC
 
    Load the rest of the packages
