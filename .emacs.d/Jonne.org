@@ -1449,14 +1449,14 @@ Search for symbol at point using =C-u C-s=.
 
           (add-hook 'racer-mode-hook #'eldoc-mode))
 
-      (use-package ac-racer
-        :ensure t)
+        (use-package ac-racer
+          :ensure t)
 
-      (use-package flycheck-rust
-        :ensure t
-        :config
-        (after 'flycheck
-          (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
+        (use-package flycheck-rust
+          :ensure t
+          :config
+          (after 'flycheck
+            (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
 
     :config
     (progn
