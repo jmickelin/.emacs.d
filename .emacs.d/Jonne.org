@@ -598,6 +598,23 @@ code. Nevertheless, thanks to the original authors!
          :bind ("C-ö" . ace-jump-mode))
    #+END_SRC
 
+** Display indications when scrolling in buffer or undoing/yanking
+
+Beacon displays a quickly fading highlight at cursor when window scrolls.
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon-mode
+    :ensure beacon
+    :config (setq beacon-color "#97af47"))
+#+END_SRC
+
+Colour the background of yanked or undone text until next command.
+
+#+BEGIN_SRC emacs-lisp
+    (use-package volatile-highlights-mode
+      :ensure volatile-highlights
+      :disabled t)
+#+END_SRC
+
 ** Smart scan
 
    #+BEGIN_SRC emacs-lisp
