@@ -1479,6 +1479,13 @@ Search for symbol at point using =C-u C-s=.
     :ensure t)
 #+END_SRC
 
+** Systemd
+For systemd =.service=-files and similar.
+#+BEGIN_SRC emacs-lisp
+  (use-package systemd
+    :ensure t)
+#+END_SRC
+
 ** Yaml
 
    #+BEGIN_SRC emacs-lisp
