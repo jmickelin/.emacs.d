@@ -132,6 +132,24 @@ code. Nevertheless, thanks to the original authors!
          (org-babel-load-file sec-file)))
    #+END_SRC
 
+** Don't clutter init.el with Customize crap
+Customize defaults to writing its configuration to the init file.
+Previously I just avoided using Customize, but newer versions of
+=Package.el= saves its list of explicitly installed packages using
+customize, meaning it clutters the file constantly. For this reason,
+we save it in a separate file.
+
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (expand-file-name "custom.el"
+                                      user-emacs-directory))
+  ;; package-autoremove uses custom variables set automatically to
+  ;; determine orphaned packages, so load it to avoid problems, even
+  ;; though we are unlikely to want anything else set by customize.
+  (when (file-exists-p custom-file)
+    (load custom-file))
+#+END_SRC
+
+
 * General configuration
 ** Startup
    Improve the startup speed.
