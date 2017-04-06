@@ -1314,6 +1314,9 @@ Use =anzu-mode= for improved query-replace behaviour.
    #+BEGIN_SRC emacs-lisp
      (use-package gfm-mode
        :ensure markdown-mode
+       ;; Pandoc's markdown_github format includes the hard_line_breaks
+       ;; extension by default, so remove it with -hard_line_breaks
+       :init (setq markdown-command "pandoc -f markdown_github-hard_line_breaks")
        :mode ("\\.md\\'" . gfm-mode))
    #+END_SRC
 
