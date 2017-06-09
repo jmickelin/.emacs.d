@@ -1117,8 +1117,10 @@ Use =anzu-mode= for improved query-replace behaviour.
                  :init (setq ebal-operation-mode 'stack))
 
                (use-package hindent
-                 :ensure hindent
-                 :config (setq hindent-style "chris-done")))
+                 :load-path (lambda () (expand-file-name "hindent/elisp"
+                                                         jms/lib-directory))
+                 :config (setq hindent-style "gibiansky"
+                               hindent-line-length 80)))
 
        :config
        (progn
