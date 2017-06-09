@@ -1136,7 +1136,7 @@ Use =anzu-mode= for improved query-replace behaviour.
 
        (haskell-doc-mode)
 
-       (hindent-mode)
+       ;(hindent-mode)
 
        (intero-mode))
    #+END_SRC
