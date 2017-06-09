@@ -247,6 +247,13 @@ we save it in a separate file.
      (put 'dired-find-alternate-file 'disabled nil)
      (put 'downcase-region 'disabled nil)
    #+END_SRC
+
+** Don't ask to reload TAGS files
+
+#+BEGIN_SRC emacs-lisp
+  (setq tags-revert-without-query t)
+#+END_SRC
+
 * Behaviour
 ** Faster keyecho for commands
    #+BEGIN_SRC emacs-lisp
