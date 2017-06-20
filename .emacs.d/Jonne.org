@@ -1379,12 +1379,21 @@ Use =anzu-mode= for improved query-replace behaviour.
 *** Browser bookmarks
     Store browser's bookmarks in an ~.org~ file (using ~org-protocol~).
     #+BEGIN_SRC emacs-lisp
-      (add-to-list 'org-capture-templates
-                   `("w" "Website" entry
+      (setappendq org-capture-templates
+                  `(("p" "Website with selection" entry
                      (file+headline ,(expand-file-name "bookmarks/bookmarks.org"
                                                        jms/note-directory)
                                     "Inbox")
-                     "* %c\n  :DATE: %u\n" :immediate-finish :kill-buffer))
+                     "* %c\n  :DATE: %u\n  #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n"
+                     :immediate-finish
+                     :kill-buffer)
+                    ("L" "Website" entry
+                     (file+headline ,(expand-file-name "bookmarks/bookmarks.org"
+                                                       jms/note-directory)
+                                    "Inbox")
+                     "* %c\n  :DATE: %u\n"
+                     :immediate-finish
+                     :kill-buffer)))
 
       (use-package org-protocol)
     #+END_SRC
