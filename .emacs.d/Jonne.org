@@ -669,24 +669,36 @@ Colour the background of yanked or undone text until next command.
                  (global-smartscan-mode t)))
    #+END_SRC
 
+** Tab-completion
+If line is already indented, try to complete.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq tab-always-indent 'complete)
+   #+END_SRC
+
 ** Autocompletion
    Set up autocompletion, and use the usual keybindings in the
    completion list.
    #+BEGIN_SRC emacs-lisp
-     (use-package auto-complete
-         :ensure auto-complete
-         :init (progn
-                 (ac-config-default)
-                 (setq ac-comphist-file (expand-file-name "ac-comphist.dat"
-                                                          jms/var-directory))
-                 (bind-key "C-n" 'ac-next ac-complete-mode-map)
-                 (bind-key "C-p" 'ac-previous ac-complete-mode-map)))
+     (use-package company-mode
+       :ensure company
+       :bind (:map company-active-map
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
+              ("C-m" . company-complete))
+       :config (progn
+                 (use-package company-quickhelp-mode
+                   :ensure company-quickhelp
+                   :init (setq company-quickhelp-delay 0))
+
+                 (add-hook 'after-init-hook 'global-company-mode)))
    #+END_SRC
 
    Alternatively, use ~ido-at-point~ for ~ido~-like matching.
    #+BEGIN_SRC emacs-lisp
      (use-package ido-at-point
          :ensure ido-at-point
+         :disabled t
          :init (ido-at-point-mode))
    #+END_SRC
 
@@ -1106,19 +1118,6 @@ Use =anzu-mode= for improved query-replace behaviour.
                      haskell-process-auto-import-loaded-modules t
                      haskell-process-log t)
 
-               (after 'auto-complete
-                 ;; Do this to get a variable in scope
-                 (auto-complete-mode)
-                 ;; Set up the haskell completions.
-                 (defun hc-ac-haskell-candidates (prefix)
-                   (let ((cs (haskell-process-get-repl-completions
-                              (haskell-process)
-                              prefix)))
-                     (remove-if (lambda (c) (string= "" c)) cs)))
-                 (ac-define-source haskell
-                   '((candidates . (hc-ac-haskell-candidates ac-prefix)))))
-
-
                (use-package intero
                  :ensure t)
 
@@ -1130,7 +1129,11 @@ Use =anzu-mode= for improved query-replace behaviour.
                  :load-path (lambda () (expand-file-name "hindent/elisp"
                                                          jms/lib-directory))
                  :config (setq hindent-style "gibiansky"
-                               hindent-line-length 80)))
+                               hindent-line-length 80))
+               (after 'company
+                 (use-package company-ghci
+                   :ensure t
+                   :init (push 'company-ghci company-backends))))
 
        :config
        (progn
@@ -1142,10 +1145,6 @@ Use =anzu-mode= for improved query-replace behaviour.
          (bind-key "C-c g"   'haskell-hoogle                  haskell-mode-map)))
 
      (defun jms/haskell-init ()
-       (after 'auto-complete
-         (auto-complete-mode 1)
-         (add-to-list 'ac-sources 'ac-source-haskell))
-
        (haskell-doc-mode)
 
        ;(hindent-mode)
@@ -1533,9 +1532,6 @@ Use =anzu-mode= for improved query-replace behaviour.
 
           (add-hook 'racer-mode-hook #'eldoc-mode)))
 
-        (use-package ac-racer
-          :ensure t))
-
       (use-package cargo
         :ensure t)
 
@@ -1549,7 +1545,7 @@ Use =anzu-mode= for improved query-replace behaviour.
         (add-to-list 'multi-compile-alist
                      '(rust-mode . (("rust-debug" . "cargo run")
                                     ("rust-release" . "cargo run --release")
-                                    ("rust-test" . "cargo test")))))
+                                    ("rust-test" . "cargo test"))))))
 
     :config
     (progn
@@ -1557,10 +1553,6 @@ Use =anzu-mode= for improved query-replace behaviour.
       (add-hook 'rust-mode-hook #'jms/rust-init )))
 
   (defun jms/rust-init ()
-    (after 'auto-complete
-      (auto-complete-mode)
-      (ac-racer-setup))
-
     (after 'flycheck
       (flycheck-mode))
 
