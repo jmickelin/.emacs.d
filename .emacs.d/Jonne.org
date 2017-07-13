@@ -628,6 +628,16 @@ we save it in a separate file.
          :ensure ace-jump-mode
          :bind ("C-ö" . ace-jump-mode))
    #+END_SRC
+** Ace-window
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :bind ("M-ö" . ace-window)
+    :config (setq aw-keys '(?q ?w ?e ?r ?a ?s ?d ?f)))
+#+END_SRC
+
+
 
 ** Display indications when scrolling in buffer or undoing/yanking
 
