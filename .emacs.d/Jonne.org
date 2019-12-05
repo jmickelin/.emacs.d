@@ -231,14 +231,12 @@ we save it in a separate file.
    #+END_SRC
 
 ** Smex
-   Smex provides an ido-like interface for ~M-x~.
+   Amx provides alternative completion systems for e.g. ~M-x~,
+   such as ido.
    #+BEGIN_SRC emacs-lisp
-     (use-package smex
-       :ensure smex
-       :bind ("M-x" . smex)
-       :init (setq smex-save-file (expand-file-name "smex-items"
-                                                    jms/var-directory))
-       :config (smex-initialize))
+     (use-package amx
+       :ensure t
+       :config (amx-mode t))
   #+END_SRC
 
 ** Reenable disabled commands
