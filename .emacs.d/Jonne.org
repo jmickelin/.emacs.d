@@ -1390,7 +1390,10 @@ Use =anzu-mode= for improved query-replace behaviour.
 
    Use org-indent-mode.
    #+BEGIN_SRC emacs-lisp
-     (setq org-startup-indented t)
+     (setq org-startup-indented t
+           ; Actually insert indentation under headings etc into the
+           ; plain-text file instead of just displaying it that way.
+           org-indent-mode-turns-off-org-adapt-indentation nil)
    #+END_SRC
 
 
