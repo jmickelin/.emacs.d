@@ -650,9 +650,11 @@ we save it in a separate file.
 
 Beacon displays a quickly fading highlight at cursor when window scrolls.
 #+BEGIN_SRC emacs-lisp
-  (use-package beacon-mode
-    :ensure beacon
-    :config (setq beacon-color "#97af47"))
+  (use-package beacon
+    :ensure t
+    :config (progn
+              (setq beacon-color "#97af47")
+              (beacon-mode)))
 #+END_SRC
 
 Colour the background of yanked or undone text until next command.
