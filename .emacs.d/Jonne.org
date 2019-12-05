@@ -1176,11 +1176,6 @@ Use =anzu-mode= for improved query-replace behaviour.
                  :ensure t
                  :init (setq ebal-operation-mode 'stack))
 
-               (use-package hindent
-                 :load-path (lambda () (expand-file-name "hindent/elisp"
-                                                         jms/lib-directory))
-                 :config (setq hindent-style "gibiansky"
-                               hindent-line-length 80))
                (after 'company
                  (use-package company-ghci
                    :ensure t
@@ -1197,9 +1192,6 @@ Use =anzu-mode= for improved query-replace behaviour.
 
      (defun jms/haskell-init ()
        (haskell-doc-mode)
-
-       ;(hindent-mode)
-
        (intero-mode))
    #+END_SRC
 
