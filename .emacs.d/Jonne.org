@@ -614,10 +614,19 @@ we save it in a separate file.
 
 ** Quickly open config file
 
+   Set the following variable to nil if _not_ using =vcsh= to handle
+   Emacs's dotfiles on the current machine.
+   #+BEGIN_SRC emacs-lisp
+     (setq jms/dot-emacs-through-vcsh t)
+   #+END_SRC
+
    #+BEGIN_SRC emacs-lisp
      (defun dotemacs ()
        (interactive)
-       (find-file jms/emacs-init-org-file))
+       (let ((org-file (if jms/dot-emacs-through-vcsh
+                           (format "%s%s" "/vcsh:emacs:" jms/emacs-init-org-file)
+                         jms/emacs-init-org-file)))
+         (find-file org-file)))
    #+END_SRC
 
 * Movement and editing
@@ -1013,6 +1022,22 @@ Use =anzu-mode= for improved query-replace behaviour.
        :config (setq magit-log-show-gpg-status t
                      magit-commit-arguments '("--gpg-sign")))
    #+END_SRC
+** vcsh
+   In order to use Magit for repos handled by =vcsh=, the following Tramp trick can be used:
+
+   #+BEGIN_SRC emacs-lisp
+     (after 'tramp
+       (add-to-list 'tramp-methods
+                    '("vcsh"
+                      (tramp-login-program "vcsh")
+                      (tramp-login-args (("enter") ("%h")))
+                      (tramp-remote-shell "/bin/sh")
+                      (tramp-remote-shell-args ("-c")))))
+   #+END_SRC
+
+   Now, you can edit a dotfile and access it for version control through Magit by navigating to it with e.g.
+   =C-x C-f /vcsh:emacs:.emacs.d/Jonne.el=.
+
 
 * Applications and utilities
 ** Compilation
