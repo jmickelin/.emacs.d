@@ -586,10 +586,29 @@ we save it in a separate file.
      (setq vc-follow-symlinks t)
    #+END_SRC
 
-** Delete trailing whitespace
+** Delete trailing whitespace and append a newline
+
+   We don't want to do this when the file is under version control, so
+   the following predicate checks this:
 
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+     (defun jms/file-under-version-control-p ()
+       (and (fboundp 'magit-file-tracked-p)
+            (magit-file-tracked-p buffer-file-name)))
+   #+END_SRC
+
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'find-file-hook '(lambda ()
+                                  (when (jms/file-under-version-control-p)
+                                      (setq mode-require-final-newline nil))))
+   #+END_SRC
+
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'before-save-hook '(lambda ()
+                                    (unless (jms/file-under-version-control-p)
+                                       delete-trailing-whitespace)))
    #+END_SRC
 
 ** Write time stamps when saving files
