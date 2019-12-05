@@ -443,6 +443,11 @@ we save it in a separate file.
 
   #+BEGIN_SRC emacs-lisp
     (ido-mode t)
+
+    (after 'magit
+      (define-key ido-common-completion-map
+        "C-M-g" 'ido-enter-magit-status))
+
     (setq ido-enable-flex-matching t
           ido-case-fold t
           ido-max-work-file-list 30
