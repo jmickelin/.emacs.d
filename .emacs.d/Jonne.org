@@ -121,6 +121,11 @@ code. Nevertheless, thanks to the original authors!
        (package-refresh-contents)
        (package-install 'use-package))
      (require 'use-package)
+
+     ;; Newer versions of use-package try to catch and handle all loading
+     ;; errors itself, breaking any use of ignore-errors that might be
+     ;; wrapping it. Disable this behavior.
+     (setq use-package-expand-minimally t)
    #+END_SRC
 
 ** Load private configuration
