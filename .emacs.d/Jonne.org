@@ -415,21 +415,6 @@ we save it in a separate file.
         :init (add-hook 'dired-load-hook (lambda ()
                                            (load "dired-x"))))
 
-    (use-package dired+
-        :ensure dired+
-        :init
-        (add-hook 'dired-load-hook
-                  (lambda ()
-                    (bind-key "d" 'diredp-dired-files ctl-x-map)
-                    (bind-key "d" 'diredp-dired-files-other-window ctl-x-4-map)
-                    (setq diredp-wrap-around-flags))))
-
-    (use-package dired-details
-        :ensure dired-details
-        :config (progn
-                  (setq-default dired-details-hidden-string "--- ")
-                  (dired-details-install)))
-
     (defun jms/dired-init ()
       ;; Dired mixes normal files and dotfiles. Since I couldn't figure
       ;; out how to fix this, we count dotfiles as boring.
