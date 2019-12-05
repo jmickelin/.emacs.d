@@ -473,8 +473,8 @@ we save it in a separate file.
   #+BEGIN_SRC emacs-lisp
     (ido-everywhere t)
 
-    (use-package ido-ubiquitous
-      :ensure ido-ubiquitous
+    (use-package ido-completing-read+
+      :ensure t
       :init (setq ido-ubiquitous-mode t))
   #+END_SRC
 
