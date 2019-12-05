@@ -1025,12 +1025,43 @@ Use =anzu-mode= for improved query-replace behaviour.
 * Version control
 ** Magit
 
+   Disable VC for git repositories, use Magit instead.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq vc-handled-backends (delq 'Git vc-handled-backends))
+   #+END_SRC
+
    #+BEGIN_SRC emacs-lisp
      (use-package magit
        :ensure magit
-       :bind ("C-M-g" . magit-status)
-       :config (setq magit-log-show-gpg-status t
-                     magit-commit-arguments '("--gpg-sign")))
+       :bind (("C-M-g" . magit-status)
+              ("C-M-ö" . magit-dispatch)
+              ("C-M-m" . magit-file-dispatch))
+       :config (setq
+                ; Pop up the status window in the same buffer that it's invoked
+                magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1
+
+                ; Signing
+                magit-log-show-gpg-status t
+                magit-commit-arguments '("--gpg-sign")
+
+                ; Prefer the "margin-format" style for magit-blame
+                magit-blame-styles '((margin
+                                      (show-lines . t)
+                                      (margin-format " %s%f" " %C %a" " %H")
+                                      (margin-width . 40)
+                                      (margin-face . magit-blame-margin)
+                                      (margin-body-face magit-blame-dimmed))
+                                     (headings
+                                      (heading-format . "%-20a %C %s"))
+                                     (highlight
+                                      (highlight-face . magit-blame-highlight))
+                                     (lines
+                                      (show-lines . t)
+                                      (show-message . t)))
+
+                ; Set pushDefault when cloning
+                magit-clone-set-remote-set.pushDefault t))
    #+END_SRC
 ** vcsh
    In order to use Magit for repos handled by =vcsh=, the following Tramp trick can be used:
