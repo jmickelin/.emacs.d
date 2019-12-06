@@ -1221,6 +1221,16 @@ Use =anzu-mode= for improved query-replace behaviour.
        :ensure idris-mode)
    #+END_SRC
 
+** JSON
+
+#+BEGIN_SRC emacs-lisp
+  (use-package json-mode
+    :ensure t
+    :mode (("\\.json" . json-mode)
+           ("\\.avsc" . json-mode))
+    :init (setq js-indent-level 2))
+#+END_SRC
+
 ** Lisp
    Show documentation in the modeline.
    #+BEGIN_SRC emacs-lisp
