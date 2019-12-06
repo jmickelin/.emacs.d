@@ -1011,6 +1011,36 @@ Use =anzu-mode= for improved query-replace behaviour.
     (global-hi-lock-mode t)
   #+END_SRC
 
+Toggle a persistent highlight on current line.
+  #+BEGIN_SRC emacs-lisp
+    (defun jms/find-overlays-specifying (prop pos)
+      (let ((overlays (overlays-at pos))
+            found)
+        (while overlays
+          (let ((overlay (car overlays)))
+            (if (overlay-get overlay prop)
+                (setq found (cons overlay found))))
+          (setq overlays (cdr overlays)))
+        found))
+
+    (defun jms/highlight-or-dehighlight-line ()
+      (interactive)
+      (if (jms/find-overlays-specifying
+           'line-highlight-overlay-marker
+           (line-beginning-position))
+          (remove-overlays (line-beginning-position) (+ 1 (line-end-position)))
+        (let ((overlay-highlight (make-overlay
+                                  (line-beginning-position)
+                                  (+ 1 (line-end-position)))))
+            (overlay-put overlay-highlight 'face '(:background "lightgreen"))
+            (overlay-put overlay-highlight 'line-highlight-overlay-marker t))))
+
+    (bind-key "C-c h" 'jms/highlight-or-dehighlight-line)
+  #+END_SRC
+
+
+
+
 * Projects
 ** Projectile
 
