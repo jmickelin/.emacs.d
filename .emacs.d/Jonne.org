@@ -318,20 +318,19 @@ we save it in a separate file.
         (progn
           (use-package ibuf-ext)
 
-          (use-package ibuffer-vc
-              :ensure ibuffer-vc)
+          (use-package ibuffer-projectile
+              :ensure t)
 
           (setq jms/ibuffer-filter-groups
-                '(("*buffers*" (name . "^\\*.*\\*"))
-                  ("Latex" (mode . latex-mode))))
+                '(("*buffers*" (name . "^\\*.*\\*"))))
           (add-hook 'ibuffer-hook
               (lambda ()
-                ;(ibuffer-vc-set-filter-groups-by-vc-root)
-                (ibuffer-do-sort-by-alphabetic)
+                (unless (eq ibuffer-sorting-mode 'alphabetic)
+                  (ibuffer-do-sort-by-alphabetic))
                 (setq ibuffer-filter-groups
                       (append jms/ibuffer-filter-groups
-                              (ibuffer-vc-generate-filter-groups-by-vc-root)))
-                (ibuffer-update nil t)))
+                              (ibuffer-projectile-generate-filter-groups)))
+                (ibuffer-update nil t))))
 
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
           ;; Change the ordering of the filter groups. This must be done as an ;;
@@ -345,18 +344,8 @@ we save it in a separate file.
           ;; Returns the precedence of a group given it's name. The lower the
           ;; precedence, the higher the position.
 
-          ;; ibuffer-vc names it's groups as follows:
-          ;;   (format "%s:%s" (symbol-name backend) root-dir)
-          ;; where backend is a backend supported by vc and
-          ;; root-dir the VC root. The backends that are supported by
-          ;; vc (and thus the ones that ibuffer-vc will use) are
-          ;; defined in the variable vc-handled-backends.
-
           (defun jms/ibuffer-sort-precedence (group-name)
-            (cond ((some (lambda (backend)
-                           (string-match (concat "^" (symbol-name backend) ":")
-                                         group-name))
-                         vc-handled-backends) 0)
+            (cond ((string-match (concat "^Projectile:") group-name) 10)
                   ((string= "Default" group-name) 40)
                   ((string= "Latex" group-name) 50)
                   ((string= "*buffers*" group-name) 9999)
@@ -372,11 +361,11 @@ we save it in a separate file.
                                   (lambda (a b)
                                     (let* ((id1 (car a))
                                            (id2 (car b))
-                                           (p1  (jms/ibuffer-sort-precedence id1))
-                                           (p2  (jms/ibuffer-sort-precedence id2)))
-                                      (if (= p1 p2)
+                                           (precedence1  (jms/ibuffer-sort-precedence id1))
+                                           (precedence2  (jms/ibuffer-sort-precedence id2)))
+                                      (if (= precedence1 precedence2)
                                           (string< id1 id2)
-                                          (< p1 p2))))))))
+                                          (< precedence1 precedence2))))))))
 
           (setq ibuffer-formats
                 '((mark modified read-only " "
@@ -386,10 +375,8 @@ we save it in a separate file.
                    ;" "
                    (mode 14 14 :left :elide)
                    " "
-                   (vc-status 10 10 :left)
-                   " "
-                   filename-and-process)))))
-  #+END_SRC
+                   project-relative-file))))
+#+END_SRC
 
 ** Uniquify
 
