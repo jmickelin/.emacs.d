@@ -1918,6 +1918,34 @@ For systemd =.service=-files and similar.
       :ensure moe-theme
       :config (load-theme 'moe-light t))
   #+END_SRC
+
+Change colors for LSP:
+#+BEGIN_SRC emacs-lisp
+  (custom-set-faces
+   '(lsp-ui-doc-background ((t (:background "light cyan" :foreground "black"))))
+   '(lsp-ui-doc-header ((t (:background "cornflower blue" :foreground "white smoke"))))
+   '(lsp-ui-peek-header ((t (:background "indian red" :foreground "black"))))
+   '(lsp-ui-peek-highlight ((t (:background "salmon" :distant-foreground "dark salmon" :foreground "black"))))
+   '(lsp-ui-peek-list ((t (:background "light salmon"))))
+   '(lsp-ui-peek-peek ((t (:background "light salmon"))))
+   '(lsp-ui-peek-selection ((t (:background "coral" :foreground "black"))))
+   '(lsp-ui-sideline-code-action ((t (:foreground "dark orange" :box (:line-width 2 :color "grey75" :style released-button) :weight bold))))
+   '(lsp-ui-sideline-current-symbol ((t (:foreground "dim gray" :box (:line-width -1 :color "dim gray") :weight ultra-bold :height 0.99)))))
+#+END_SRC
+
+Change colors for company:
+
+#+BEGIN_SRC emacs-lisp
+  (custom-set-faces
+   '(company-preview ((t (:background "light salmon" :foreground "black"))))
+   '(company-preview-common ((t (:background "#ffd5e5" :foreground "deep sky blue"))))
+   '(company-preview-search ((t (:background "light salmon" :foreground "black" :weight bold))))
+   '(company-tooltip ((t (:background "light salmon" :foreground "black"))))
+   '(company-tooltip-annotation ((t (:background "light salmon" :foreground "black"))))
+   '(company-tooltip-common ((t (:background "light salmon" :foreground "black"))))
+   '(company-tooltip-common-selection ((t (:background "tomato" :foreground "black" :weight bold)))))
+#+END_SRC
+
 ** Modeline
 
    #+BEGIN_SRC emacs-lisp
