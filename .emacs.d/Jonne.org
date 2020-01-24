@@ -1141,6 +1141,13 @@ Toggle a persistent highlight on current line.
                 ; Set pushDefault when cloning
                 magit-clone-set-remote-set.pushDefault t))
    #+END_SRC
+** Ediff
+   Avoid creating new frames for ediff.
+
+   #+BEGIN_SRC emacs-lisp
+   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+   #+END_SRC
+
 ** vcsh
    In order to use Magit for repos handled by =vcsh=, the following Tramp trick can be used:
 
