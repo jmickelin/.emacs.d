@@ -102,8 +102,9 @@ code. Nevertheless, thanks to the original authors!
    #+END_SRC
 
    Any site-local or similarly installed packages go here.
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'load-path (expand-file-name "/usr/share/agda/emacs-mode"))
+   #+BEGIN_SRC emacs-lis
+     ;; symlink to directory holding local install of agda-input.el
+     (add-to-list 'load-path (expand-file-name "agda-input" user-emacs-directory))
    #+END_SRC
 
    Load the rest of the packages
