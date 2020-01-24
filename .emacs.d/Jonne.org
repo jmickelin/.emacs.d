@@ -1225,6 +1225,65 @@ Toggle a persistent highlight on current line.
    #+END_SRC
 
 * Language
+** Language server-protocol
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package lsp-mode
+       :ensure t
+       :bind (:map lsp-mode-map
+                   ("C-c C-t" . lsp-describe-thing-at-point))
+       :hook (lsp-after-open . (lambda ()
+                                 (setq lsp-auto-configure t
+                                       lsp-eldoc-render-all nil
+                                       lsp-enable-completion-at-point t
+                                       lsp-enable-xref t
+                                       lsp-prefer-flymake nil
+                                       lsp-imenu-show-container-name t
+                                       lsp-enable-file-watchers t
+                                       lsp-enable-semantic-highlighting t
+                                       lsp-enable-imenu t
+                                       lsp-signature-auto-activate t
+                                       lsp-signature-render-documentation t)))
+       :commands lsp)
+
+     (use-package lsp-ui
+       :ensure t
+       :config (progn
+                 (setq lsp-ui-sideline-enable t
+                       lsp-ui-doc-enable t
+                       lsp-ui-flycheck-enable t
+                       lsp-ui-imenu-enable t
+                       lsp-ui-sideline-ignore-duplicate t
+                       lsp-ui-peek-enable t
+                       lsp-ui-doc-header t
+                       lsp-ui-doc-include-signature t
+                       lsp-ui-doc-position 'at-point
+                       lsp-ui-flycheck-list-position 'right
+                       lsp-ui-peek-fontify 'always
+                       lsp-ui-sideline-show-hover nil
+                       lsp-ui-doc-border "gold1")
+                 (lsp-lens-mode))
+       :bind (:map lsp-ui-mode-map
+              ("M-." . lsp-ui-peek-find-definitions)
+              ("M-?" . lsp-ui-peek-find-references))
+       :commands lsp-ui-mode)
+
+     (use-package company-lsp
+       :ensure t
+       :init (after 'company
+                 (add-to-list 'company-backends 'company-lsp))
+       :commands company-lsp)
+
+     (use-package helm-lsp
+       :ensure t
+       :commands helm-lsp-workspace-symbol)
+
+     (use-package lsp-treemacs
+       :ensure t
+       :commands lsp-treemacs-errors-list)
+   #+END_SRC
+
 ** Agda
 
    #+BEGIN_SRC emacs-lisp
