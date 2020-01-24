@@ -909,6 +909,13 @@ Follow matching lines in their own buffer when moving in search buffers.
 
   (add-hook 'occur-mode-hook 'next-error-follow-minor-mode)
 #+END_SRC
+
+This seems to have changed recently in some mode?
+
+#+BEGIN_SRC emacs-lisp
+  (setq isearch-case-fold-search t)
+#+END_SRC
+
 ** Scrolling
 
    #+BEGIN_SRC emacs-lisp
