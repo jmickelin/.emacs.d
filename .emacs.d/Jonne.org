@@ -1039,6 +1039,7 @@ Use =anzu-mode= for improved query-replace behaviour.
 
    #+BEGIN_SRC emacs-lisp
      (use-package flymake
+       :ensure t
        :config
        (use-package flymake-cursor
          :ensure flymake-cursor
