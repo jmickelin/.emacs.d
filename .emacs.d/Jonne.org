@@ -466,6 +466,13 @@ we save it in a separate file.
       :init (setq helm-move-to-line-cycle-in-source t))
   #+END_SRC
 
+* Hydra
+  #+BEGIN_SRC emacs-lisp
+    (use-package major-mode-hydra
+      :ensure t
+      :bind ("C-c C-SPC" . major-mode-hydra))
+  #+END_SRC
+
 * Input method
   Use ~agda-mode~'s input method to type various unicode symbols.
   Rebind the default Agda prefix to ~§~ in order to not interfere with
