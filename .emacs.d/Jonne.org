@@ -250,6 +250,7 @@ we save it in a separate file.
      (put 'narrow-to-region 'disabled nil)
      (put 'dired-find-alternate-file 'disabled nil)
      (put 'downcase-region 'disabled nil)
+     (put 'upcase-region 'disabled nil)
    #+END_SRC
 
 ** Don't ask to reload TAGS files
@@ -1140,6 +1141,10 @@ Toggle a persistent highlight on current line.
 
                 ; Set pushDefault when cloning
                 magit-clone-set-remote-set.pushDefault t))
+
+     ;; Reenable inline editing of previous versions of file (automatically
+     ;; triggers a rebase)
+     (put 'magit-edit-line-commit 'disabled nil)
    #+END_SRC
 ** Ediff
    Avoid creating new frames for ediff.
