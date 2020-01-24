@@ -1322,43 +1322,116 @@ Toggle a persistent highlight on current line.
 
 ** Haskell
 
+Import utilities:
+   #+BEGIN_SRC emacs-lisp
+     (setq jms/haskell-import-mapping
+           '(("Data.Attoparsec.Char8" . "import qualified Data.Attoparsec.Char8 as Atto8\n")
+             ("Data.Text" . "import qualified Data.Text as T\nimport Data.Text (Text)\n")
+             ("Data.Text.Encoding" . "import qualified Data.Text.Encoding as T\n")
+             ("Data.Text.Lazy.Encoding" . "import qualified Data.Text.Lazy.Encoding as LT\n")
+             ("Data.Text.Lazy" . "import qualified Data.Text.Lazy as LT\n")
+             ("Data.Text.IO" . "import qualified Data.Text.IO as T\n")
+             ("Data.Text.Lazy.IO" . "import qualified Data.Text.IO as LT\n")
+             ("Data.ByteString" . "import qualified Data.ByteString as S\nimport Data.ByteString (ByteString)\n")
+             ("Data.ByteString.Char8" . "import qualified Data.ByteString.Char8 as S8\nimport Data.ByteString (ByteString)\n")
+             ("Data.ByteString.Lazy" . "import qualified Data.ByteString.Lazy as L\n")
+             ("Data.ByteString.Lazy.Builder" . "import qualified Data.ByteString.Builder as SB\n")
+             ("Data.ByteString.Builder" . "import qualified Data.ByteString.Builder as SB\n")
+             ("Data.ByteString.Lazy.Char8" . "import qualified Data.ByteString.Lazy.Char8 as L8\n")
+             ("Data.Map" . "import qualified Data.Map.Strict as M\nimport Data.Map.Strict (Map)\n")
+             ("Data.HashMap" . "import qualified Data.HashMap.Strict as HM\nimport Data.HashMap.Strict (HashMap)\n")
+             ("Data.IntMap" . "import qualified Data.IntMap.Strict as IM\nimport Data.IntMap.Strict (IntMap)\n")
+             ("Data.StrMap" . "import Data.StrMap as StrMap\nimport Data.StrMap (StrMap)\n")
+             ("Data.Map.Strict" . "import qualified Data.Map.Strict as M\nimport Data.Map.Strict (Map)\n")
+             ("Data.Set" . "import qualified Data.Set as Set\nimport Data.Set (Set)\n")
+             ("Data.Vector" . "import qualified Data.Vector as V\nimport Data.Vector (Vector)\n")
+             ("Data.Vector.Storable" . "import qualified Data.Vector.Storable as SV\nimport Data.Vector (Vector)\n")
+             ("Data.List.NonEmpty" . "import qualified Data.List.NonEmpty as NE\nimport Data.List.NonEmpty (NonEmpty(..))\n")
+             ("Data.Conduit.List" . "import qualified Data.Conduit.List as CL\n")
+             ("Data.Conduit.Binary" . "import qualified Data.Conduit.Binary as CB\n")
+             ("Data.Sequence" . "import qualified Data.Sequence as Seq\nimport Data.Sequence (Seq)\n")))
+
+     (setq jms/haskell-imports-helm-source
+           `((name . "*helm* Insert Haskell import")
+             (candidates . ,jms/haskell-import-mapping)
+             (action . (lambda (candidate)
+                         (helm-marked-candidates)))))
+
+     (defun jms/haskell-imports-helm ()
+       (interactive)
+       (insert
+        (mapconcat 'identity
+                   (helm :sources '(jms/haskell-imports-helm-source))
+                   ",")))
+   #+END_SRC
+
+Get some premade snippets:
+   #+BEGIN_SRC emacs-lisp
+     (use-package haskell-snippets
+       :ensure t)
+   #+END_SRC
+
+Configure LSP to run HIE inside a Nix shell:
+#+BEGIN_SRC emacs-lisp
+  (defvar jms/haskell-shell-nix-path "."
+    "The absolute path of the `shell.nix' file that sets up a nix
+         shell for the Haskell environment to be used with `lsp-haskell'.")
+
+  (defun jms/lsp-haskell-nix-wrapper-with (shell-nix argv)
+    (let
+        ((intercalate
+          #'(lambda (sep l)
+              (mapconcat 'identity l sep))))
+      (append
+       (list "nix-shell" "-I" ".")
+       (list  "--command" (funcall intercalate " " argv))
+       (list shell-nix))))
+
+  (defun jms/lsp-haskell-nix-wrapper (argv)
+    (jms/lsp-haskell-nix-wrapper-with jms/haskell-shell-nix-path argv))
+
+  (use-package lsp-haskell
+    :ensure t
+    :hook ((haskell-mode . lsp))
+    :config
+    (progn
+      (after 'company
+        (push 'company-lsp company-backends))
+      (setq lsp-haskell-process-args-hie '("-d" "-l" "/tmp/hie.log")
+            lsp-haskell-process-wrapper-function #'jms/lsp-haskell-nix-wrapper)))
+#+END_SRC
+
+Finally, set up Haskell mode:
    #+BEGIN_SRC emacs-lisp
      (use-package haskell-mode
        :ensure haskell-mode
+       :hook ((haskell-mode . jms/haskell-init))
        :mode ("\\.l?hs" . haskell-mode)
-
        :init (progn
-               (setq haskell-tags-on-save t
-                     haskell-stylish-on-save t
-                     haskell-process-type 'auto
+               (setq haskell-stylish-on-save nil
                      haskell-process-suggest-remove-import-lines t
                      haskell-process-auto-import-loaded-modules t
-                     haskell-process-log t)
+                     haskell-process-log t))
 
-               (use-package intero
-                 :ensure t)
+       :config (progn
+                 (bind-key "C-c i"   'haskell-imports-helm-source     haskell-mode-map)
+                 (bind-key "C-c g"   'haskell-hoogle                  haskell-mode-map)))
 
-               (use-package ebal
-                 :ensure t
-                 :init (setq ebal-operation-mode 'stack))
-
-               (after 'company
-                 (use-package company-ghci
-                   :ensure t
-                   :init (push 'company-ghci company-backends))))
-
-       :config
-       (progn
-
-         (add-hook 'haskell-mode-hook #'jms/haskell-init)
-
-         (bind-key "<f8>"    'haskell-navigate-imports        haskell-mode-map)
-         (bind-key "C-c C-c" 'ebal-execute                    haskell-mode-map)
-         (bind-key "C-c g"   'haskell-hoogle                  haskell-mode-map)))
+     (after 'hydra
+       (major-mode-hydra-define haskell-mode nil
+         ("Navigation"
+          (("o" haskell-navigate-imports  "imports"))
+          "Editing"
+          (("i" jms/haskell-imports-helm  "imports")
+           ("y" yas-describe-tables "snippets")
+           ("g" ghcid "ghcid"))
+          "Documentation"
+          (("h" hoogle "hoogle")))))
 
      (defun jms/haskell-init ()
+       (subword-mode)
        (haskell-doc-mode)
-       (intero-mode))
+       (add-hook 'haskell-mode-hook 'company-mode))
    #+END_SRC
 
 ** Idris
