@@ -1402,6 +1402,12 @@ Configure LSP to run HIE inside a Nix shell:
             lsp-haskell-process-wrapper-function #'jms/lsp-haskell-nix-wrapper)))
 #+END_SRC
 
+In-editor building and repl tools:
+#+BEGIN_SRC emacs-lisp
+  ;; Fork of ghcid.el from https://github.com/lukasz-golebiewski/dotfiles/blob/master/emacs.d/extras/ghcid-nix.el
+  (require 'ghcid-nix)
+#+END_SRC
+
 Finally, set up Haskell mode:
    #+BEGIN_SRC emacs-lisp
      (use-package haskell-mode
