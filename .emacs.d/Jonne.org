@@ -534,9 +534,15 @@ we save it in a separate file.
 
    #+BEGIN_SRC emacs-lisp
      (require 'recentf)
+     ;; Remember to set the save file *before* enabling recentf-mode,
+     ;; otherwise the file list will be loaded using the default file.
+     (setq recentf-save-file (expand-file-name "recentf" jms/var-directory))
      (recentf-mode t)
      (setq recentf-max-saved-items 50)
-     (setq recentf-save-file (expand-file-name "recentf" jms/var-directory))
+     (run-at-time "1 min" 60
+                  '(lambda ()
+                     (let ((inhibit-message t))
+                       (recentf-save-list))))
 
      (defun ido-recentf-open ()
        "Use `ido-completing-read' to \\[find-file] a recent file"
