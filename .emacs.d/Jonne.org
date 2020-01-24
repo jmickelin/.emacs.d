@@ -409,7 +409,7 @@ we save it in a separate file.
       (setq dired-omit-files (concat dired-omit-files "\\|^\\.[^\\.]+$"))
 
       ;; Sort directories first, then by by extension.
-      (setq dired-listing-switches "-lXGh --group-directories-first"))
+      (setq dired-listing-switches "-lGh --group-directories-first"))
 
     (add-hook 'dired-load-hook #'jms/dired-init)
   #+END_SRC
