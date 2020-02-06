@@ -1472,20 +1472,43 @@ Finally, set up Haskell mode:
    Use paredit.
    #+BEGIN_SRC emacs-lisp
      (use-package paredit
-         :ensure paredit
-         :init (progn
-                 (mapcar (lambda (hook) (add-hook hook #'enable-paredit-mode))
-                  '(emacs-lisp-mode-hook
-                    eval-expression-minibuffer-setup-hook
-                    ielm-mode-hook
-                    lisp-mode-hook
-                    lisp-interaction-mode-hook
-                    scheme-mode-hook))
+       :ensure paredit
+       :bind (:map paredit-mode-map
+                   ("M-\"" . paredit-meta-doublequote)
+                   ("M-(" . paredit-wrap-round)
+                   ("M-s" . paredit-splice-sexp)
+                   ("M-r" . paredit-raise-sexp)
+                   ("M-S" . paredit-split-sexp)
+                   ("M-J" . paredit-join-sexp)
+                   ("C-(" . paredit-backward-slurp-sexp)
+                   ("C-)" . paredit-forward-slurp-sexp)
+                   ("C-M-(" . paredit-backward-barf-sexp)
+                   ("C-M-)" . paredit-forward-barf-sexp)
+                   ("C-M-<backspace>" . paredit-splice-sexp-killing-backward)
+                   ("C-M-<delete>" . paredit-splice-sexp-killing-forward)
+                   ("M-q" . paredit-reindent-defun))
+       :config (progn
+                 ;; Unbind default bindings using the arrow keys to learn the
+                 ;; custom ones
+                 (unbind-key "C-M-<left>" paredit-mode-map)
+                 (unbind-key "C-M-<right>" paredit-mode-map)
+                 (unbind-key "C-<left>" paredit-mode-map)
+                 (unbind-key "C-<right>" paredit-mode-map)
+                 (unbind-key "M-<up>" paredit-mode-map)
+                 (unbind-key "M-<down>" paredit-mode-map))
+       :init (progn
+               (mapcar (lambda (hook) (add-hook hook #'enable-paredit-mode))
+                       '(emacs-lisp-mode-hook
+                         eval-expression-minibuffer-setup-hook
+                         ielm-mode-hook
+                         lisp-mode-hook
+                         lisp-interaction-mode-hook
+                         scheme-mode-hook))
 
-                 (after 'eldoc
-                   (eldoc-add-command
-                    'paredit-backward-delete
-                    'paredit-close-round))))
+               (after 'eldoc
+                 (eldoc-add-command
+                  'paredit-backward-delete
+                  'paredit-close-round))))
    #+END_SRC
 
    For easy tracing.
