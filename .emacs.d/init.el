@@ -13,6 +13,8 @@
       (file-name-directory jms/emacs-init-file))
 (setq jms/emacs-init-org-file (expand-file-name "Jonne.org"
                                                 user-emacs-directory))
+(setq jms/emacs-init-org-file-local (expand-file-name "Jonne-local.org"
+                                                      user-emacs-directory))
 
 ;; Override the built in org-mode package with the git version, if it
 ;; exists.

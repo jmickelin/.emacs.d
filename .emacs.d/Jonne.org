@@ -2172,3 +2172,11 @@ Change colors for company:
          :inherit 'mode-line-position-face
          :foreground "black" :background "#eab700")
    #+END_SRC
+* Apply machine-local settings
+  These should ideally only be limited to work-specidfic things that
+  cannot be shared on Github.
+
+  #+BEGIN_SRC emacs-lisp
+    (when (file-exists-p jms/emacs-init-org-file-local)
+      (org-babel-load-file jms/emacs-init-org-file-local))
+  #+END_SRC
