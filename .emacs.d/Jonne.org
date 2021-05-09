@@ -443,6 +443,24 @@ we save it in a separate file.
     (add-hook 'dired-load-hook #'jms/dired-init)
   #+END_SRC
 
+** vcsh
+   In order to use Magit for repos handled by =vcsh=, the following Tramp trick can be used:
+
+   #+BEGIN_SRC emacs-lisp
+     (after 'tramp
+       (add-to-list 'tramp-methods
+                    '("vcsh"
+                      (tramp-login-program "vcsh")
+                      (tramp-login-args (("enter") ("%h")))
+                      (tramp-remote-shell "/bin/sh")
+                      (tramp-remote-shell-args ("-c"))
+                      ;; Force use of a Bourne-compatible shell
+                      (tramp-login-env (("SHELL") ("/bin/bash"))))))
+   #+END_SRC
+
+   Now, you can edit a dotfile and access it for version control through Magit by navigating to it with e.g.
+   =C-x C-f /vcsh:emacs:.emacs.d/Jonne.el=.
+
 * Ido and Helm
   I use ido for most interaction with files and buffers, and Helm selectively
   for some other things.
@@ -1183,23 +1201,6 @@ Toggle a persistent highlight on current line.
    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
    #+END_SRC
 
-** vcsh
-   In order to use Magit for repos handled by =vcsh=, the following Tramp trick can be used:
-
-   #+BEGIN_SRC emacs-lisp
-     (after 'tramp
-       (add-to-list 'tramp-methods
-                    '("vcsh"
-                      (tramp-login-program "vcsh")
-                      (tramp-login-args (("enter") ("%h")))
-                      (tramp-remote-shell "/bin/sh")
-                      (tramp-remote-shell-args ("-c"))
-                      ;; Force use of a Bourne-compatible shell
-                      (tramp-login-env (("SHELL") ("/bin/bash"))))))
-   #+END_SRC
-
-   Now, you can edit a dotfile and access it for version control through Magit by navigating to it with e.g.
-   =C-x C-f /vcsh:emacs:.emacs.d/Jonne.el=.
 
 
 * Applications and utilities
