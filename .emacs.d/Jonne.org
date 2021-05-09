@@ -120,9 +120,8 @@ This is still used by a number of packages used by the config, listed here:
      (add-to-list 'load-path jms/lib-directory)
    #+END_SRC
 
-
    Any site-local or similarly installed packages go here.
-   #+BEGIN_SRC emacs-lis
+   #+BEGIN_SRC emacs-lisp
      ;; symlink to directory holding local install of agda-input.el
      (add-to-list 'load-path (expand-file-name "agda-input" user-emacs-directory))
    #+END_SRC
