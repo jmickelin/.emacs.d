@@ -14,6 +14,20 @@ code. Nevertheless, thanks to the original authors!
 #+END_SRC
 
 * Emacs initialization
+** Disable warnings about deprecated cl package
+This is still used by a number of packages used by the config, listed here:
+- dash
+- mic-paren
+- guide-key
+- spinner
+- fringe-helper
+- json-reformat
+- ace-jump-mode
+
+  #+BEGIN_SRC emacs-lisp
+    (setq byte-compile-warnings '(not cl-functions))
+  #+END_SRC
+
 ** Directories
    The directory where ~package.el~ stores installed packages.
    #+BEGIN_SRC emacs-lisp
@@ -77,7 +91,7 @@ code. Nevertheless, thanks to the original authors!
 
    We use functions from ~cl~ throughout the configuration.
    #+BEGIN_SRC emacs-lisp
-     (require 'cl)
+     (require 'cl-lib)
    #+END_SRC
 
 ** Package sources
