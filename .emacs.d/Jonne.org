@@ -106,7 +106,7 @@ This is still used by a number of packages used by the config, listed here:
 
    This sets up the load path so that we can override it
    #+BEGIN_SRC emacs-lisp
-     (package-initialize nil)
+     (package-initialize)
    #+END_SRC
 
    Add every subdirectory of ~jms/lib-directory~ to the load path.
@@ -126,13 +126,6 @@ This is still used by a number of packages used by the config, listed here:
      ;; symlink to directory holding local install of agda-input.el
      (add-to-list 'load-path (expand-file-name "agda-input" user-emacs-directory))
    #+END_SRC
-
-   Load the rest of the packages
-   #+BEGIN_SRC emacs-lisp
-     (package-initialize t)
-     ;;(setq package-enable-at-startup nil)
-   #+END_SRC
-
 
    We handle most other packages via the ~use-package~ macro, which
    uses ~package.el~ to install missing packages automatically.
