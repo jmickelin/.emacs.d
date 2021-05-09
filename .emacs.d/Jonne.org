@@ -1247,6 +1247,24 @@ Toggle a persistent highlight on current line.
            browse-url-generic-program "/usr/bin/firefox")
    #+END_SRC
 
+** Elisp Bug Hunter
+This tool can be used when debugging the initialization of Emacs, in a
+bisect-like fashion. To do this with tangled =.org= files, copy the
+initialization from =init.el= up until the invocation of
+=org-babel-load-file= and paste it at the top of =Jonne.el=. Then
+comment out everything from =init.el= and add the following line:
+
+#+BEGIN_EXAMPLE
+  (load "~/.emacs.d/Jonne.el")
+#+END_EXAMPLE
+
+Then call =bug-hunter-init-file= and follow the on-screen instructions.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package bug-hunter
+    :ensure t)
+#+END_SRC
+
 * Language
 ** Language server-protocol
 
