@@ -902,17 +902,21 @@ If line is already indented, try to complete.
    #+BEGIN_SRC emacs-lisp
      (use-package multiple-cursors
          :ensure multiple-cursors
-         :bind (("C-S-c C-S-c" . mc/edit-lines)
-                ("C-S-c C-e"   . mc/edit-ends-of-lines)
-                ("C-S-c C-a"   . mc/edit-beginnings-of-lines)
-
-                ("M-ä" . mc/mark-all-dwim)
+         :bind (("M-ä" . mc/mark-all-dwim)
+                ("M-Ä" . mc/edit-beginnings-of-lines)
                 ("C-å" . mc/mark-previous-like-this)
+                ("C-Å" . mc/unmark-previous-like-this)
                 ("C-ä" . mc/mark-next-like-this)
-                ("C-Ä" . mc/mark-more-like-this-extended)
+                ("C-Ä" . mc/unmark-next-like-this)
+                ("C-M-ä" . mc/mark-all-symbols-like-this-in-defun)
                 ("M-å" . mc/mark-all-in-region)
 
-                ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
+                ("C-S-<mouse-1>" . mc/add-cursor-on-click)
+
+                :map mc/keymap ;; Removes the binding that makes return
+                               ;; quit multiple-cursors-mode, thus allowing
+                               ;; for insertion of newlines
+                ("<return>" . nil)))
    #+END_SRC
 
 ** Spelling
