@@ -1287,6 +1287,14 @@ Toggle a persistent highlight on current line.
   (put 'magit-edit-line-commit 'disabled nil)
 #+END_SRC
 
+** Blamer
+
+#+BEGIN_SRC emacs-lisp
+  (use-package blamer
+    :ensure t
+    :config (global-blamer-mode 1))
+#+END_SRC
+
 ** Ediff
    Avoid creating new frames for ediff.
 
