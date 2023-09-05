@@ -775,17 +775,15 @@ Colour the background of yanked or undone text until next command.
                (unbind-key "C-M-q" dumb-jump-mode-map)))
    #+END_SRC
 
-** Smart scan
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package smartscan
-       :ensure smartscan
-       :config (progn
-                 (unbind-key "M-p" smartscan-map)
-                 (unbind-key "M-n" smartscan-map)
-                 (bind-key "C-c n n" 'smartscan-symbol-go-forward smartscan-map)
-                 (bind-key "C-c n p" 'smartscan-symbol-go-backward smartscan-map)
-                 (global-smartscan-mode t)))
+** Smart scan
+  #+BEGIN_SRC emacs-lisp
+    (use-package smartscan
+      :ensure smartscan
+      :config (progn
+                (bind-key "M-n" 'smartscan-symbol-go-forward smartscan-map)
+                (bind-key "M-p" 'smartscan-symbol-go-backward smartscan-map)
+                (global-smartscan-mode t)))
    #+END_SRC
 
 ** Tab-completion
