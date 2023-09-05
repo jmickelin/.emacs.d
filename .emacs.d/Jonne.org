@@ -578,9 +578,9 @@ we save it in a separate file.
      (recentf-mode t)
      (setq recentf-max-saved-items 50)
      (run-at-time "1 min" 60
-                  '(lambda ()
-                     (let ((inhibit-message t))
-                       (recentf-save-list))))
+                  #'(lambda ()
+                      (let ((inhibit-message t))
+                        (recentf-save-list))))
 
      (defun ido-recentf-open ()
        "Use `ido-completing-read' to \\[find-file] a recent file"
@@ -645,19 +645,19 @@ Override this behavior by toggling the following variable in e.g.
 
 
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'find-file-hook '(lambda ()
-                                  (when (and (jms/file-under-version-control-p)
-                                             (not jms/trim-all-files))
-                                    (setq mode-require-final-newline nil))))
+     (add-hook 'find-file-hook #'(lambda ()
+                                   (when (and (jms/file-under-version-control-p)
+                                              (not jms/trim-all-files))
+                                     (setq mode-require-final-newline nil))))
    #+END_SRC
 
 
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'before-save-hook '(lambda ()
-                                    (unless
-                                        (and (jms/file-under-version-control-p)
-                                             (not jms/trim-all-files))
-                                      (delete-trailing-whitespace))))
+     (add-hook 'before-save-hook #'(lambda ()
+                                     (unless
+                                         (and (jms/file-under-version-control-p)
+                                              (not jms/trim-all-files))
+                                       (delete-trailing-whitespace))))
    #+END_SRC
 
 ** Write time stamps when saving files
@@ -869,7 +869,7 @@ If line is already indented, try to complete.
            ispell-dictionary "english")
 
      (dolist (hook '(text-mode-hook))
-       (add-hook hook (lambda () (flyspell-mode 1))))
+       (add-hook hook #'(lambda () (flyspell-mode 1))))
 
      ;; Flyspell overrides this key, for some reason.
      (global-set-key (kbd "M-<tab>") 'completion-at-point)
@@ -1334,10 +1334,10 @@ Then call =bug-hunter-init-file= and follow the on-screen instructions.
 ** C
 
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'c-mode-common-hook '(lambda ()
-                                     (c-toggle-auto-newline 1)
-                                     (setq c-default-style "linux"
-                                           c-basic-offset 4)))
+     (add-hook 'c-mode-common-hook #'(lambda ()
+                                       (c-toggle-auto-newline 1)
+                                       (setq c-default-style "linux"
+                                             c-basic-offset 4)))
    #+END_SRC
 
 ** Dockerfile
