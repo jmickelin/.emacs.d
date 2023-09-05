@@ -919,6 +919,13 @@ If line is already indented, try to complete.
                 ("<return>" . nil)))
    #+END_SRC
 
+** iedit
+
+#+BEGIN_SRC emacs-lisp
+  (use-package iedit
+    :ensure t)
+#+END_SRC
+
 ** Spelling
 
    #+BEGIN_SRC emacs-lisp
