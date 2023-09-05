@@ -1075,6 +1075,15 @@ Use =anzu-mode= for improved query-replace behaviour.
            ("C-M-%" . anzu-query-replace-regexp)))
 #+END_SRC
 
+** Window management
+
+   #+BEGIN_SRC emacs-lisp
+     (bind-key "C-x 1" 'maximize-window)
+     (bind-key "C-x '" 'delete-other-windows)
+     (bind-key "C-x C-'" 'balance-windows)
+     (setq window-resize-pixelwise t)
+   #+END_SRC
+
 ** Yasnippets
 
    #+BEGIN_SRC emacs-lisp
