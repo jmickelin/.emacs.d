@@ -1294,6 +1294,11 @@ Toggle a persistent highlight on current line.
    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
    #+END_SRC
 
+** Smerge
+#+BEGIN_SRC emacs-lisp
+  (setq smerge-command-prefix "\C-cd")
+#+END_SRC
+
 
 
 * Applications and utilities
