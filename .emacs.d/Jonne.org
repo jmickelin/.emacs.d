@@ -722,7 +722,18 @@ Override this behavior by toggling the following variable in e.g.
     :config (setq aw-keys '(?q ?w ?e ?r ?a ?s ?d ?f)))
 #+END_SRC
 
+** Edit comments in separate windows
 
+#+BEGIN_SRC emacs-lisp
+  (use-package separedit
+    :ensure t
+    :bind (:map prog-mode-map
+           ("C-c '" . #'separedit))
+    :config (progn
+              (setq separedit-default-mode 'markdown-mode)
+              ;; Needed to support Haddock comments
+              (add-to-list 'separedit-not-support-docstring-modes 'haskell-mode)))
+#+END_SRC
 
 ** Display indications when scrolling in buffer or undoing/yanking
 
