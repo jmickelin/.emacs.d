@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Ignore unused warnings
+# key: unused
+# --
+{-# OPTIONS_GHC -Wno-unused-matches -Wno-unused-matches -Wno-unused-imports -Wno-unused-imports #-}

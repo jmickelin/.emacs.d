@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Pair Programming (myurl.net specific)
+# key: ppk
+# --
+Co-authored-by: ${1:name} <${1:$(replace-regexp-in-string "[[:space:]]" "." (downcase yas/text))}@myurl.net>

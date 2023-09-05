@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Pair Programming
+# key: pp
+# --
+Co-authored-by: ${1:name} <${2:email@domain.tld}>
