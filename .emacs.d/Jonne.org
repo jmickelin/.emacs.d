@@ -2194,7 +2194,7 @@ Change colors for company:
      (set-face-attribute 'mode-line-mode-face nil
          :inherit 'mode-line-face
          :foreground "gray80"
-         :box '(:line-width 2 :color "#gray60"))
+         :box '(:line-width 2 :color "gray60"))
      (set-face-attribute 'mode-line-minor-mode-face nil
          :inherit 'mode-line-mode-face
          :foreground "gray40"
