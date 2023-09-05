@@ -812,20 +812,29 @@ If line is already indented, try to complete.
 ** Autocompletion
    Set up autocompletion, and use the usual keybindings in the
    completion list.
-   #+BEGIN_SRC emacs-lisp
-     (use-package company-mode
-       :ensure company
-       :bind (:map company-active-map
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous)
-              ("C-m" . company-complete))
-       :config (progn
-                 (use-package company-quickhelp-mode
-                   :ensure company-quickhelp
-                   :init (setq company-quickhelp-delay 0))
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :bind (:map company-mode-map
+           ([remap completion-at-point] . company-complete)
+           ([remap complete-symbol] . company-complete)
+           :map company-active-map
+           ("C-n" . company-select-next)
+           ("C-p" . company-select-previous)
+           ("C-m" . company-complete))
+    :init (global-company-mode)
+    :config (setq company-minimum-prefix-length 3
+                  company-idle-delay 0.0))
 
-                 (add-hook 'after-init-hook 'global-company-mode)))
-   #+END_SRC
+  (use-package company-quickhelp
+    :ensure t
+    :hook (global-company-mode . company-quickhelp-mode)
+    :init (setq company-quickhelp-delay 0))
+
+  (use-package company-box
+    :ensure t
+    :hook (global-company-mode . company-box-mode))
+#+END_SRC
 
    Alternatively, use ~ido-at-point~ for ~ido~-like matching.
    #+BEGIN_SRC emacs-lisp
