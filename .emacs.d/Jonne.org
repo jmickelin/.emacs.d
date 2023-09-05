@@ -666,11 +666,13 @@ Override this behavior by toggling the following variable in e.g.
 
 
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'before-save-hook #'(lambda ()
-                                     (unless
-                                         (and (jms/file-under-version-control-p)
-                                              (not jms/trim-all-files))
-                                       (delete-trailing-whitespace))))
+     (defun jms/before-save-hook ()
+       (unless
+           (and (jms/file-under-version-control-p)
+                (not jms/trim-all-files))
+         (delete-trailing-whitespace)))
+
+     (add-hook 'before-save-hook #'jms/before-save-hook)
    #+END_SRC
 
 ** Write time stamps when saving files
