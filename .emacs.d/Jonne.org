@@ -775,6 +775,22 @@ Colour the background of yanked or undone text until next command.
                (unbind-key "C-M-q" dumb-jump-mode-map)))
    #+END_SRC
 
+** Highlight symbol under cursor
+
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-symbol
+    :ensure t
+    :config (progn
+              (setq highlight-symbol-idle-delay 0.1
+                    highlight-symbol-on-navigation-p t)
+              (add-hook 'prog-mode-hook #'jms/enable-highlight-symbol-mode)
+              (add-hook 'text-mode-hook #'jms/enable-highlight-symbol-mode)
+              (bind-key "M-'" 'highlight-symbol-query-replace highlight-symbol-nav-mode-map)))
+
+  (defun jms/enable-highlight-symbol-mode ()
+    (highlight-symbol-mode t)
+    (highlight-symbol-nav-mode t))
+#+END_SRC
 
 ** Smart scan
   #+BEGIN_SRC emacs-lisp
