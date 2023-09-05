@@ -1025,6 +1025,17 @@ with a kill from within Emacs.
   (setq save-interprogram-paste-before-kill t)
 #+END_SRC
 
+Delete a line without putting it in the kill-ring:
+#+BEGIN_SRC emacs-lisp
+  (defun jms/silent-kill-line ()
+    (interactive)
+    (delete-region (point) (line-end-position)))
+
+  (bind-keys :prefix "C-z"
+             :prefix-map c-z-prefix-map
+             ("C-k" . jms/silent-kill-line))
+#+END_SRC
+
 ** Searching
 Search for symbol at point using =C-u C-s=.
 
