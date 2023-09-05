@@ -1330,10 +1330,15 @@ Toggle a persistent highlight on current line.
        :init (setq deft-text-mode 'org-mode
                    deft-default-extension "org"
                    deft-directory (expand-file-name "deft"
-                                                    jms/note-directory)))
+                                                    jms/note-directory))
+       :hook (deft-mode . (lambda ()
+                            (remove-hook 'before-save-hook
+                                         #'jms/trim-whitespace
+                                         'local))))
    #+END_SRC
 
 ** Image files
+
    Use as an image viewer.
    #+BEGIN_SRC emacs-lisp
      (auto-image-file-mode t)
