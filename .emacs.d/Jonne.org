@@ -759,12 +759,17 @@ Colour the background of yanked or undone text until next command.
    #+BEGIN_SRC emacs-lisp
      (use-package dumb-jump
        :ensure t
-       :bind (("C-M-." . dump-jump-go-other-window)
+       :bind (:map dumb-jump-mode-map
+              ("C-M-." . dump-jump-go-other-window)
               ("M-." . dumb-jump-go)
               ("M-," . dumb-jump-back)
               ("C-c M-." . dumb-jump-quick-look)
               ("M-i". dumb-jump-go-prompt))
        :init (progn
+               (dumb-jump-mode t)
+               (setq dumb-jump-force-searcher 'ag)
+               (setq xref-backend-functions (remq 'etags--xref-backend xref-backend-functions)) ; Remove TAGS
+               (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
                (unbind-key "C-M-g" dumb-jump-mode-map)
                (unbind-key "C-M-p" dumb-jump-mode-map)
                (unbind-key "C-M-q" dumb-jump-mode-map)))
