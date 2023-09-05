@@ -2146,7 +2146,9 @@ Split a source code block intelligently.
 For systemd =.service=-files and similar.
 #+BEGIN_SRC emacs-lisp
   (use-package systemd
-    :ensure t)
+    :ensure t
+    :disabled t ; broken (2023-09-05)
+    )
 #+END_SRC
 
 ** Yaml
