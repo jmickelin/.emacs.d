@@ -926,6 +926,21 @@ If line is already indented, try to complete.
     :ensure t)
 #+END_SRC
 
+** Indent regions
+
+Invoke =indent-rigidly= with =C-x TAB=.
+#+BEGIN_SRC emacs-lisp
+  (unbind-key "S-<right>" indent-rigidly-map)
+  (unbind-key "S-<left>" indent-rigidly-map)
+  (unbind-key "<left>" indent-rigidly-map)
+  (unbind-key "<right>" indent-rigidly-map)
+
+  (bind-key "C-M-f" 'indent-rigidly-right-to-tab-stop indent-rigidly-map)
+  (bind-key "C-M-b" 'indent-rigidly-left-to-tab-stop indent-rigidly-map)
+  (bind-key "C-f" 'indent-rigidly-right indent-rigidly-map)
+  (bind-key "C-b" 'indent-rigidly-left indent-rigidly-map)
+#+END_SRC
+
 ** Spelling
 
    #+BEGIN_SRC emacs-lisp
