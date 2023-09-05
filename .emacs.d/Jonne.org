@@ -472,6 +472,19 @@ we save it in a separate file.
                                         jms/var-directory))
   #+END_SRC
 
+Because backing out of deeply nested =vcsh= directories (such as the
+one entered with =dotemacs=) is annoying, here is a command for
+replacing the directory shown in =ido= with the home directory.
+#+BEGIN_SRC emacs-lisp
+  (defun jms/ido-home ()
+    (interactive)
+    (ido-set-current-home)
+    (setq ido-exit 'refresh)
+    (setq ido-rotate-temp t)
+    (exit-minibuffer))
+  (define-key ido-file-completion-map (kbd "C-M-h") #'jms/ido-home)
+#+END_SRC
+
   Ido completion for imenu.
   #+BEGIN_SRC emacs-lisp
     (use-package idomenu
