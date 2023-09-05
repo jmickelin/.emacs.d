@@ -1079,13 +1079,15 @@ Use =anzu-mode= for improved query-replace behaviour.
 
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet
-     :ensure yasnippet
+       :ensure yasnippet
+       :bind (("C-c C-y" . yas-insert-snippet)
+              :map yas-minor-mode-map
+              ("C-<return>" . yas-expand))
          :init (progn
                  (setq yas-snippet-dirs (list jms/snippet-directory))
                  (yas-global-mode 1))
          :config (progn (yas-reload-all)
-                        (bind-key "C-<return>" 'yas-expand yas-minor-mode-map)
-                        (setq yas/prompt-functions '(yas/ido-prompt))))
+                   (setq yas/prompt-functions '(yas-ido-prompt))))
    #+END_SRC
 
 ** X selection
