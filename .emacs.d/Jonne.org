@@ -489,7 +489,7 @@ replacing the directory shown in =ido= with the home directory.
   #+BEGIN_SRC emacs-lisp
     (use-package idomenu
         :ensure idomenu
-        :bind ("M-i" . idomenu))
+        :bind ("C-M-i" . idomenu))
   #+END_SRC
 
   Show the list of possible completions vertically.
