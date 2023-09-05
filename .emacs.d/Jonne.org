@@ -2070,6 +2070,17 @@ Split a source code block intelligently.
     :mode (("/PKGBUILD$" . pkgbuild-mode)))
 #+END_SRC
 
+** Python
+
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-python-ms
+    :ensure t
+    :init (setq lsp-python-ms-auto-install-server t)
+    :hook (python-mode . (lambda ()
+                            (require 'lsp-python-ms)
+                            (lsp))))
+#+END_SRC
+
 ** Rust
 
 #+BEGIN_SRC emacs-lisp
