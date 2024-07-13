@@ -92,6 +92,7 @@ Notes and bookmarks.
 We use functions from ~cl~ throughout the configuration.
 #+BEGIN_SRC emacs-lisp
   (require 'cl-lib)
+  (require 'cl-extra)
 #+END_SRC
 
 ** Package sources
@@ -207,20 +208,23 @@ to quickly (re)open the scratch buffer.
 
 Don't create backups of sensitive files!
   #+BEGIN_SRC emacs-lisp
-    (defvar jms/backup-ignore-regexps (list "^/dev/shm/pass.*" ; pass creates files here
-                                           "\\.gpg$")
-      "*List of filename regexps to not backup")
+      (defvar jms/backup-ignore-regexps (list "^/dev/shm/pass.*" ; pass creates files here
+                                             "\\.gpg$")
+        "*List of filename regexps to not backup")
 
-    (defun jms/backup-enable-p (name)
-      "Filter certain file backups"
-      (when (normal-backup-enable-predicate name)
-        (let ((backup t))
-          (mapc (lambda (re)
-                  (setq backup (and backup (not (string-match re name)))))
-                jms/backup-ignore-regexps)
-          backup)))
+      (defvar jms/backup-ignore-tramp-methods (list "su"
+                                                    "sudo")
+        "*List of tramp remote methods to not backup")
 
-  (setq backup-enable-predicate 'jms/backup-enable-p)
+      (defun jms/backup-enable-p (name)
+        "Filter certain file backups"
+        (and (normal-backup-enable-predicate name)
+             (not (member (file-remote-p name 'method)
+                          jms/backup-ignore-tramp-methods))
+             (cl-notany (lambda (re) (string-match-p re name))
+                        jms/backup-ignore-regexps)))
+
+    (setq backup-enable-predicate 'jms/backup-enable-p)
 #+END_SRC
 
 ** Path
