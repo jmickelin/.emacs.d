@@ -1917,6 +1917,14 @@ For easy tracing.
     :ensure t)
 #+END_SRC
 
+** Nix
+
+#+BEGIN_SRC emacs-lisp
+  (use-package nix-mode
+    :ensure t
+    :mode ("\\.nix\\'" "\\.nix.in\'"))
+#+END_SRC
+
 ** Org
 
 #+BEGIN_SRC emacs-lisp
