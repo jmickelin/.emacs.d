@@ -1008,6 +1008,7 @@ Undo tree.
   (use-package undo-tree
     :ensure undo-tree
     :init (progn (setq undo-tree-visualizer-diff t
+                       undo-tree-auto-save-history nil
                        undo-tree-visualizer-relative-timestamps t
                        undo-tree-enable-undo-in-region nil)
                  (global-undo-tree-mode)))
