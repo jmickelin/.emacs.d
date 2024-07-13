@@ -204,6 +204,7 @@ to quickly (re)open the scratch buffer.
 #+BEGIN_SRC emacs-lisp
   (setq auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-"
                                                      jms/var-directory))
+  (setq tramp-allow-unsafe-temporary-files t) ;; Inhibit prompt when editing root-owned files with sudo: or su:
 #+END_SRC
 
 Don't create backups of sensitive files!
