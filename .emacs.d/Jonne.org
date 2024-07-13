@@ -951,6 +951,7 @@ Invoke =indent-rigidly= with =C-x TAB=.
 
 #+BEGIN_SRC emacs-lisp
   (setq ispell-process-directory (expand-file-name "~/")
+        ispell-program-name "hunspell"
         flyspell-issue-message-flag nil
         ispell-dictionary "english")
 
