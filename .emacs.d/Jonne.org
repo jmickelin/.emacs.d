@@ -20,7 +20,6 @@ This is still used by a number of packages used by the config, listed here:
 - mic-paren
 - guide-key
 - spinner
-- fringe-helper
 - json-reformat
 - ace-jump-mode
 
@@ -2259,50 +2258,7 @@ The package ~mic-paren~ offers some advantages over ~show-paren-mode~
     :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 #+END_SRC
 
-** Fringe
 
-Show the git status of every line in the fringe.
-#+BEGIN_SRC emacs-lisp
-  (use-package git-gutter-fringe
-      :ensure git-gutter-fringe
-      :config (progn
-                (global-git-gutter-mode t)
-                (set-face-foreground 'git-gutter-fr:modified "dark orange")
-                (set-face-foreground 'git-gutter-fr:added    "dark green")
-                (set-face-foreground 'git-gutter-fr:deleted  "dark red")
-
-                (setq git-gutter-fr:side 'right-fringe)
-
-                (fringe-helper-define 'git-gutter-fr:modified nil
-                  "XXXXXXXX"
-                  "XXXXXXXX"
-                  "XXXXXXXX"
-                  "XXXXXXXX"
-                  "XXXXXXXX"
-                  "XXXXXXXX"
-                  "XXXXXXXX"
-                  "XXXXXXXX")
-
-                (fringe-helper-define 'git-gutter-fr:added nil
-                  "...XX..."
-                  "...XX..."
-                  "...XX..."
-                  "XXXXXXXX"
-                  "XXXXXXXX"
-                  "...XX..."
-                  "...XX..."
-                  "...XX...")
-
-                (fringe-helper-define 'git-gutter-fr:deleted nil
-                  "........"
-                  "........"
-                  "XXXXXXXX"
-                  "XXXXXXXX"
-                  "XXXXXXXX"
-                  "........"
-                  "........"
-                  "........")))
-#+END_SRC
 
 ** Theme
 
