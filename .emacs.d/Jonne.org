@@ -168,6 +168,17 @@ we save it in a separate file.
     (load custom-file))
 #+END_SRC
 
+** Tramp security
+Prevent tramp-sudo from saving the password in plaintext in
+=~/.authinfo= or =~/.netrc=.
+#+BEGIN_SRC emacs-lisp
+  (setq auth-source-save-behavior nil)
+#+END_SRC
+
+Change the password cache expiry to 60 minutes.
+#+BEGIN_SRC emacs-lisp
+  (setq password-cache-expiry 3600)
+#+END_SRC
 
 * General configuration
 ** Startup
