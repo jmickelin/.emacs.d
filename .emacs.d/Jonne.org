@@ -16,11 +16,8 @@ code. Nevertheless, thanks to the original authors!
 * Emacs initialization
 ** Disable warnings about deprecated cl package
 This is still used by a number of packages used by the config, listed here:
-- dash
 - mic-paren
 - guide-key
-- spinner
-- json-reformat
 - ace-jump-mode
 
 #+BEGIN_SRC emacs-lisp
