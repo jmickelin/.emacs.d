@@ -14,14 +14,6 @@ code. Nevertheless, thanks to the original authors!
 #+END_SRC
 
 * Emacs initialization
-** Disable warnings about deprecated cl package
-This is still used by a number of packages used by the config, listed here:
-- mic-paren
-
-#+BEGIN_SRC emacs-lisp
-  (setq byte-compile-warnings '(not cl-functions))
-#+END_SRC
-
 ** Directories
 The directory where ~package.el~ stores installed packages.
 #+BEGIN_SRC emacs-lisp
@@ -1885,10 +1877,6 @@ For easy tracing.
     ;;        C-c C-p C-p       - preview at point
     ;; (load "preview-latex.el" nil t t)
 
-    (after 'mic-paren
-      (paren-toggle-matching-quoted-paren 1)
-      (paren-toggle-matching-paired-delimiter 1))
-
     ;; Use outline mode to fold sections (and environments).
     ;; Keys:  F10                 - outline-cycle
     ;; Note that I use outline-magic rather than the default behaviour.
@@ -2281,12 +2269,16 @@ Never use dialog boxes.
 
 ** Show matching parentheses
 
-The package ~mic-paren~ offers some advantages over ~show-paren-mode~
-(e.g. it still works if the matching parenthesis is off-screen).
+Customize ~show-paren-mode~ to highlight whole expressions and loosen
+the conditions for when highlighting is done. Also show some context
+in the echo area if the whole expression isn't on screen at once.
+
 #+BEGIN_SRC emacs-lisp
-  (use-package mic-paren
-    :ensure mic-paren
-    :init (paren-activate))
+  (show-paren-mode 1)
+  (setq show-paren-style 'expression
+        show-paren-when-point-inside-paren t
+        show-paren-when-point-in-periphery t
+        show-paren-context-when-offscreen t)
 #+END_SRC
 
 ** Color parentheses by depth
