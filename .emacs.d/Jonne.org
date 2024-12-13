@@ -289,6 +289,14 @@ such as ido.
 #+END_SRC
 
 * Behaviour
+** Faster tramp remote editing
+
+#+BEGIN_SRC emacs-lisp
+  (setq remote-file-name-inhibit-cache t)
+  (setq remote-file-name-inhibit-locks t)
+  (setq tramp-verbose 1)
+#+END_SRC
+
 ** Faster keyecho for commands
 #+BEGIN_SRC emacs-lisp
   (setq echo-keystrokes 0.1)
