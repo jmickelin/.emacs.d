@@ -1557,8 +1557,8 @@ Then call =bug-hunter-init-file= and follow the on-screen instructions.
 
 ** Erlang
 #+BEGIN_SRC emacs-lisp
-  (use-package erlang-mode
-    :ensure erlang
+  (use-package erlang
+    :ensure t
     :mode ("\\.[e\|h]rl" . erlang-mode)
     :init (require 'erlang-start))
 #+END_SRC
