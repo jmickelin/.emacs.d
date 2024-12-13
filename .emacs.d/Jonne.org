@@ -18,7 +18,6 @@ code. Nevertheless, thanks to the original authors!
 This is still used by a number of packages used by the config, listed here:
 - mic-paren
 - guide-key
-- ace-jump-mode
 
 #+BEGIN_SRC emacs-lisp
   (setq byte-compile-warnings '(not cl-functions))
@@ -731,12 +730,15 @@ Emacs's dotfiles on the current machine.
 #+END_SRC
 
 * Movement and editing
-** Ace-jump
+** Avy
 Quickly jump within documents.
 #+BEGIN_SRC emacs-lisp
-  (use-package ace-jump-mode
-      :ensure ace-jump-mode
-      :bind ("C-ö" . ace-jump-mode))
+  (use-package avy
+    :ensure t
+    :bind (("C-ö" . avy-goto-char-timer)
+           ("C-x C-ö" . avy-goto-line))
+    :config (setq avy-keys '(?q ?w ?e ?r ?a ?s ?d ?f)
+                  avy-style 'at))
 #+END_SRC
 ** Ace-window
 
