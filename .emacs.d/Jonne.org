@@ -1944,8 +1944,8 @@ For easy tracing.
 ** Markdown
 
 #+BEGIN_SRC emacs-lisp
-  (use-package gfm-mode
-    :ensure markdown-mode
+  (use-package markdown-mode
+    :ensure t
     ;; Pandoc's markdown_github format includes the hard_line_breaks
     ;; extension by default, so remove it with -hard_line_breaks
     :init (setq markdown-command "pandoc -f markdown_github-hard_line_breaks")
