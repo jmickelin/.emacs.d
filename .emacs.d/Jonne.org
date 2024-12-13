@@ -17,7 +17,6 @@ code. Nevertheless, thanks to the original authors!
 ** Disable warnings about deprecated cl package
 This is still used by a number of packages used by the config, listed here:
 - mic-paren
-- guide-key
 
 #+BEGIN_SRC emacs-lisp
   (setq byte-compile-warnings '(not cl-functions))
@@ -305,22 +304,55 @@ such as ido.
 
 ** Show hints for some commmands that require several key presses
 #+BEGIN_SRC emacs-lisp
-  (use-package guide-key
-      :ensure guide-key
-      :init (progn
-              (setq guide-key/guide-key-sequence
-                    '("C-x r"
-                      "C-x 4"
-                      "C-x v"
-                      "C-x 8"
-                      "C-x x"
-                      "C-c p"
-                      "C-c s"))
+  (defun jms/which-key-automatically-for-prefixes (key-desc _)
+    (cond
+     ;; Automatically pop up which-key immediately for these prefixes.
+     ;; For other prefixes, which-key can be invoked by pressing C-h.
+     ;; While which-key is showing, pressing C-h h calls `help-char',
+     ;; which is the Emacs default behavior.
+     ((string-match-p "^C-x r" key-desc) nil)
+     ((string-match-p "^C-x 4" key-desc) nil)
+     ((string-match-p "^C-x 8" key-desc) nil)
+     ((string-match-p "^C-x x" key-desc) nil)
+     ((string-match-p "^C-c p" key-desc) nil)
+     ((string-match-p "^C-c s" key-desc) nil)
+     (t (if (which-key--popup-showing-p)
+            nil
+          10000))))
 
-              (guide-key-mode 1)
+  (use-package which-key
+    :ensure t
+    :config (progn
 
-              (setq guide-key/recursive-key-sequence-flag t)
-              (setq guide-key/popup-window-position 'bottom)))
+              ;; This breaks the display of the currently entered prefix
+              ;; in the modeline, for whatever reason. Furthermore,
+              ;; which-key-show-early-on-C-h does not work for delays
+              ;; created by delay-functions...
+              ;;
+              ;; (add-hook 'which-key-delay-functions #'jms/which-key-automatically-for-prefixes)
+
+              (setq
+               ;; Press C-h to manually invoke which-key
+               which-key-show-early-on-C-h t
+
+               ;; Set artificially high to avoid starting it automatically
+               which-key-idle-delay 10000
+
+               ;; After invoking it manually, we want sub-menus to show
+               ;; up almost instantly, however.
+               which-key-idle-secondary-delay 0.05
+
+               which-key-popup-type 'side-window
+               which-key-side-window-location 'bottom
+
+               ;; which-key tends to allocate too little space without
+               ;; this, causing the last row to be nearly invisible
+               which-key-allow-imprecise-window-fit nil
+
+               which-key-show-prefix 'minibuffer
+               which-key-add-column-padding 3)
+
+              (which-key-mode)))
 #+END_SRC
 
 ** Disable some default keybindings
