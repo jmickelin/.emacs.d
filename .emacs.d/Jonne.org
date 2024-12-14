@@ -559,7 +559,6 @@ To enable Helm everywhere, use ~(helm-mode 1)~. I don't do this.
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :ensure t
-    :disabled t
     :init (setq helm-move-to-line-cycle-in-source t))
 #+END_SRC
 
