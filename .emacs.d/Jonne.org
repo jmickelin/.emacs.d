@@ -801,7 +801,7 @@ Colour the background of yanked or undone text until next command.
 #+BEGIN_SRC emacs-lisp
   (use-package volatile-highlights
     :ensure t
-    :disabled t)
+    :config (volatile-highlights-mode))
 #+END_SRC
 
 ** Dump Jump
