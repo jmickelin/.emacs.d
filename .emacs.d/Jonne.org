@@ -1295,13 +1295,6 @@ Toggle a persistent highlight on current line.
 
 * Version control
 ** Magit
-
-Disable VC for git repositories, use Magit instead.
-
-#+BEGIN_SRC emacs-lisp
-  (setq vc-handled-backends (delq 'Git vc-handled-backends))
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
@@ -2285,6 +2278,18 @@ in the echo area if the whole expression isn't on screen at once.
   (use-package rainbow-delimiters
     :ensure t
     :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+#+END_SRC
+
+** Fringe
+
+Show the git status of every line in the fringe.
+#+BEGIN_SRC emacs-lisp
+  (use-package diff-hl
+    :ensure t
+    :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+    :config (progn
+              (global-diff-hl-mode)
+              (diff-hl-flydiff-mode)))
 #+END_SRC
 
 
