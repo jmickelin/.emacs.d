@@ -519,6 +519,9 @@ for some other things.
 
   (setq ido-enable-flex-matching t
         ido-case-fold t
+        ; Ony ignore . and ..
+        ido-ignore-files '("\\`\\.\\./" "\\`\\./")
+        ido-ignore-directories '("\\`\\.\\./" "\\`\\./")
         ido-max-work-file-list 30
         ido-save-directory-list-file (expand-file-name
                                       "ido.last"
