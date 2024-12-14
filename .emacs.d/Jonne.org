@@ -538,6 +538,7 @@ replacing the directory shown in =ido= with the home directory.
     (setq ido-exit 'refresh)
     (setq ido-rotate-temp t)
     (exit-minibuffer))
+
   (define-key ido-file-completion-map (kbd "C-M-h") #'jms/ido-home)
 #+END_SRC
 
