@@ -2306,10 +2306,32 @@ Show the git status of every line in the fringe.
               (diff-hl-flydiff-mode)))
 #+END_SRC
 
+** Appearance
+*** Font
+Customize the font by searching through available fonts on the system.
+We have to jump through some hoops to ensure that the function is
+deferred until the graphical session has started. Otherwise,
+=find-font= will fail to return any matches:
+#+BEGIN_SRC emacs-lisp
+  (defun jms/set-new-frame-font-oneshot ()
+    (let ((font-available-p (lambda (font)
+                              (find-font (font-spec :name font)))))
+      (cond
+       ((funcall font-available-p "JuliaMono Frozen")
+        (set-face-attribute 'default nil :font "JuliaMono Frozen-14"))
+       ((funcall font-available-p "Dejavu Sans Mono")
+        (set-face-attribute 'default nil :font "Dejavu Sans Mono-14"))))
 
+    (remove-hook 'server-after-make-frame-hook #'jms/set-new-frame-font-oneshot))
 
-** Theme
+  (if (daemonp)
+      (add-hook 'server-after-make-frame-hook
+                #'jms/set-new-frame-font-oneshot)
+    (jms/set-new-frame-font-oneshot))
+  #+END_SRC
 
+*** Theme
+Change the theme:
 #+BEGIN_SRC emacs-lisp
   (use-package moe-theme
     :ensure t
