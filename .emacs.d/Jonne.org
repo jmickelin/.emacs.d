@@ -2297,6 +2297,11 @@ in the echo area if the whole expression isn't on screen at once.
 
 ** Fringe
 
+#+BEGIN_SRC emacs-lisp
+  (setq fringe-mode 10)
+  (set-fringe-mode fringe-mode)
+  #+END_SRC
+
 Show the git status of every line in the fringe.
 #+BEGIN_SRC emacs-lisp
   (use-package diff-hl
