@@ -231,7 +231,7 @@ variables from the login shell.
 
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
-      :ensure exec-path-from-shell
+      :ensure t
       :init (exec-path-from-shell-initialize))
 #+END_SRC
 
@@ -371,7 +371,6 @@ This often trips me up when using my WM (which binds ~s-l~).
 ** Ibuffer
 #+BEGIN_SRC emacs-lisp
   (use-package ibuffer
-      :ensure ibuffer
       :bind ("C-x C-b" . ibuffer)
       :config
       (progn
@@ -541,7 +540,7 @@ Show the list of possible completions vertically.
 
 #+BEGIN_SRC emacs-lisp
   (use-package ido-vertical-mode
-      :ensure ido-vertical-mode
+      :ensure t
       :init (progn
               (setq ido-vertical-define-keys t)
               (ido-vertical-mode t)))
@@ -558,8 +557,8 @@ Use ido /everywhere/.
 
 To enable Helm everywhere, use ~(helm-mode 1)~. I don't do this.
 #+BEGIN_SRC emacs-lisp
-  (use-package helm-config
-    :ensure helm
+  (use-package helm
+    :ensure t
     :disabled t
     :init (setq helm-move-to-line-cycle-in-source t))
 #+END_SRC
@@ -800,8 +799,8 @@ Beacon displays a quickly fading highlight at cursor when window scrolls.
 Colour the background of yanked or undone text until next command.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package volatile-highlights-mode
-    :ensure volatile-highlights
+  (use-package volatile-highlights
+    :ensure t
     :disabled t)
 #+END_SRC
 
@@ -846,7 +845,7 @@ Colour the background of yanked or undone text until next command.
 ** Smart scan
 #+BEGIN_SRC emacs-lisp
   (use-package smartscan
-    :ensure smartscan
+    :ensure t
     :config (progn
               (bind-key "M-n" 'smartscan-symbol-go-forward smartscan-map)
               (bind-key "M-p" 'smartscan-symbol-go-backward smartscan-map)
@@ -890,7 +889,7 @@ completion list.
 Alternatively, use ~ido-at-point~ for ~ido~-like matching.
 #+BEGIN_SRC emacs-lisp
   (use-package ido-at-point
-      :ensure ido-at-point
+      :ensure t
       :disabled t
       :init (ido-at-point-mode))
 #+END_SRC
@@ -940,7 +939,7 @@ Alternatively, use ~ido-at-point~ for ~ido~-like matching.
 
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
-      :ensure expand-region
+      :ensure t
       :bind ("C-'" . er/expand-region))
 #+END_SRC
 
@@ -953,7 +952,7 @@ Alternatively, use ~ido-at-point~ for ~ido~-like matching.
 
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
-      :ensure multiple-cursors
+      :ensure t
       :bind (("M-ä" . mc/mark-all-dwim)
              ("M-Ä" . mc/edit-beginnings-of-lines)
              ("C-å" . mc/mark-previous-like-this)
@@ -1045,7 +1044,7 @@ Invoke =indent-rigidly= with =C-x TAB=.
 #+BEGIN_SRC emacs-lisp
   (use-package vim-empty-lines-mode
     :disabled t
-    :ensure vim-empty-lines-mode
+    :ensure t
     :init (global-vim-empty-lines-mode))
 #+END_SRC
 
@@ -1053,7 +1052,7 @@ Invoke =indent-rigidly= with =C-x TAB=.
 Undo tree.
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
-    :ensure undo-tree
+    :ensure t
     :init (progn (setq undo-tree-visualizer-diff t
                        undo-tree-auto-save-history nil
                        undo-tree-visualizer-relative-timestamps t
@@ -1126,7 +1125,7 @@ This seems to have changed recently in some mode?
 
 #+BEGIN_SRC emacs-lisp
   (use-package palimpsest
-    :ensure palimpsest
+    :ensure t
     :init  (add-hook 'text-mode-hook 'palimpsest-mode))
 #+END_SRC
 
@@ -1154,7 +1153,7 @@ Use =anzu-mode= for improved query-replace behaviour.
 
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
-    :ensure yasnippet
+    :ensure t
     :bind (("C-c C-y" . yas-insert-snippet)
            :map yas-minor-mode-map
            ("C-<return>" . yas-expand))
@@ -1210,7 +1209,7 @@ Make the middle click insert text at point.
 #+BEGIN_SRC emacs-lisp
   (after 'outline
     (use-package outline-magic
-      :ensure outline-magic
+      :ensure t
       :init (bind-key "<f10>" 'outline-cycle outline-minor-mode-map)))
 
   (set-display-table-slot
@@ -1225,7 +1224,7 @@ Make the middle click insert text at point.
 
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
-    :ensure flycheck
+    :ensure t
     :init (setq global-flycheck-mode t))
 #+END_SRC
 
@@ -1236,7 +1235,7 @@ Make the middle click insert text at point.
     :ensure t
     :config
     (use-package flymake-cursor
-      :ensure flymake-cursor
+      :ensure t
       :init (setq flymake-cursor-auto-enable t)))
 #+END_SRC
 
@@ -1281,7 +1280,7 @@ Toggle a persistent highlight on current line.
 
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    :ensure projectile
+    :ensure t
     :defer t
     :bind-keymap ("C-c p" . projectile-command-map)
     :config (use-package ag
@@ -1306,7 +1305,7 @@ Disable VC for git repositories, use Magit instead.
 
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :ensure magit
+    :ensure t
     :bind (("C-M-g" . magit-status)
            ("C-M-ö" . magit-dispatch)
            ("C-M-m" . magit-file-dispatch))
@@ -1394,7 +1393,7 @@ Avoid creating new frames for ediff.
 
 #+BEGIN_SRC emacs-lisp
   (use-package deft
-    :ensure deft
+    :ensure t
     :bind ("C-c o" . deft)
     :init (setq deft-text-mode 'org-mode
                 deft-default-extension "org"
@@ -1673,7 +1672,7 @@ In-editor building and repl tools:
 Finally, set up Haskell mode:
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
-    :ensure haskell-mode
+    :ensure t
     :hook ((haskell-mode . haskell-indentation-mode)
            (haskell-mode . interactive-haskell-mode)
            (haskell-mode . subword-mode)
@@ -1742,7 +1741,7 @@ Finally, set up Haskell mode:
 
 #+BEGIN_SRC emacs-lisp
   (use-package idris-mode
-    :ensure idris-mode)
+    :ensure t)
 #+END_SRC
 
 ** JSON
@@ -1769,7 +1768,7 @@ Show documentation in the modeline.
 Use paredit.
 #+BEGIN_SRC emacs-lisp
   (use-package paredit
-    :ensure paredit
+    :ensure t
     :bind (:map paredit-mode-map
                 ("M-\"" . paredit-meta-doublequote)
                 ("M-(" . paredit-wrap-round)
@@ -2218,7 +2217,7 @@ For systemd =.service=-files and similar.
 
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
-    :ensure yaml-mode
+    :ensure t
     :mode (("\\.yml$" . yaml-mode) ("\\.yaml$" . yaml-mode)))
 #+END_SRC
 
@@ -2285,7 +2284,7 @@ in the echo area if the whole expression isn't on screen at once.
 
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
-    :ensure rainbow-delimiters
+    :ensure t
     :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 #+END_SRC
 
@@ -2295,7 +2294,7 @@ in the echo area if the whole expression isn't on screen at once.
 
 #+BEGIN_SRC emacs-lisp
   (use-package moe-theme
-    :ensure moe-theme
+    :ensure t
     :config (load-theme 'moe-light t))
 #+END_SRC
 
