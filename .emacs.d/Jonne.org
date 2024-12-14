@@ -2330,6 +2330,18 @@ deferred until the graphical session has started. Otherwise,
     (jms/set-new-frame-font-oneshot))
   #+END_SRC
 
+Use ligatures (no sensible way to opt in to everything, sadly):
+#+BEGIN_SRC emacs-lisp
+  (use-package ligature
+    :ensure t
+
+    :config
+    (let ((ligs '("->" "=>" "|>" "<|" "::" "<--" "-->" "<-->" "==" "===" "====" "<!--")))
+            (ligature-set-ligatures 'prog-mode ligs)
+            (ligature-set-ligatures 'org-mode ligs))
+    (global-ligature-mode t))
+#+END_SRC
+
 *** Theme
 Change the theme:
 #+BEGIN_SRC emacs-lisp
