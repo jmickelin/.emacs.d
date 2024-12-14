@@ -252,7 +252,7 @@ for asymmetric.
   (epa-file-enable)
 #+END_SRC
 
-** Smex
+** Amx
 Amx provides alternative completion systems for e.g. ~M-x~,
 such as ido.
 #+BEGIN_SRC emacs-lisp
