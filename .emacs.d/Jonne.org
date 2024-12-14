@@ -505,8 +505,11 @@ for some other things.
   (ido-mode t)
 
   (after 'magit
-    (define-key ido-common-completion-map
-      "C-M-g" 'ido-enter-magit-status))
+    (defun bind-ido-magit ()
+      (define-key ido-common-completion-map
+                  (kbd "C-M-g") 'ido-enter-magit-status))
+
+    (add-hook 'ido-setup-hook 'bind-ido-magit))
 
   (setq ido-enable-flex-matching t
         ido-case-fold t
