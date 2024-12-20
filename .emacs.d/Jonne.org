@@ -1,5 +1,5 @@
 The following is the latest revision of my Emacs configuration which
-has grown spontaneously over the last decade. I've borrowed several parts
+has grown spontaneously over the past decades. I've borrowed several parts
 from others' configurations, too many to properly give credit to here,
 and frankly, in almost all cases, I don't remember where I first found the
 code. Nevertheless, thanks to the original authors!
