@@ -1063,6 +1063,13 @@ Invoke =indent-rigidly= with =C-x TAB=.
   (dolist (hook '(text-mode-hook))
     (add-hook hook #'(lambda () (flyspell-mode 1))))
 
+  ;; Use =eval: (ispell-change-dictionary language)= as a file local
+  ;; variable to select the correct dictionary automatically.
+  (dolist (lang '("svenska" "english"))
+    (add-to-list 'safe-local-variable-values `(eval ispell-change-dictionary ,lang)))
+
+  (add-hook 'ispell-change-dictionary-hook #'flyspell-buffer)
+
   ;; Flyspell overrides this key, for some reason.
   (global-set-key (kbd "M-<tab>") 'completion-at-point)
 
