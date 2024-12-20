@@ -91,6 +91,44 @@ We use functions from ~cl~ throughout the configuration.
 
 ** Loading packages
 
+Provide a way to disable ~use-package~'s ~:ensure~, so that
+installation of packages can be done externally to Emacs. This can be
+done in two ways:
+
+1. Through the environment variable
+   ~EMACS_USE_PACKAGE_INHIBIT_ENSURE~. A value of ~1~ means that
+   ~use-package~ should ignore the value of ~:ensure~, and never use
+   ~package.el~ to install packages even to install packages. A value
+   of ~0~ means that ~use-package~ _should_ consider the value of
+   ~:ensure~, and use it to determine whether to install packages.
+
+2. Otherwise, if Emacs was invoked by calling a package in the Nix
+   store, indicating that Emacs is likely installed through Nix, the
+   default behavior is to ignore ~:ensure~.
+
+3. On non-Nix systems, the default behavior is reversed, defaulting to
+   ~:ensure~ being considered.
+
+#+BEGIN_SRC emacs-lisp
+  (setq jms/use-package-inhibit-ensure
+	(let ((env (getenv "EMACS_USE_PACKAGE_INHIBIT_ENSURE")))
+	  (cond
+	   ((string= env "0") nil)
+	   ((string= env "1") t)
+	   ((string-prefix-p "/nix/store/" (invocation-directory)))
+	   (t nil))))
+
+  (setq use-package-ensure-function
+	(lambda (name args _state)
+	  (if jms/use-package-inhibit-ensure
+	      nil
+	    (use-package-ensure-elpa name args _state))))
+
+  ; Fail early if package is not found, prompting the user make sure it
+  ; is installed externally. Deferring this would hide the problem.
+  (setq use-package-always-demand t)
+#+END_SRC
+
 This sets up the load path so that we can override it
 #+BEGIN_SRC emacs-lisp
   (package-initialize)
