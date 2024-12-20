@@ -2164,6 +2164,7 @@ Typing the ~#+BEGIN_SRC <lang>~ things manually is tedious.
 
       (previous-line 2)
       (org-edit-src-code)))
+
   (bind-key "C-c s i" 'jms/org-insert-src-block org-mode-map)
 #+END_SRC
 
