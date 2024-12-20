@@ -797,10 +797,10 @@ Add the following template near the top of a file:
 
 ** Quickly open config file
 
-Set the following variable to nil if _not_ using =vcsh= to handle
-Emacs's dotfiles on the current machine.
+Set the following variable to =1= if using =vcsh= to handle Emacs's
+dotfiles on the current machine.
 #+BEGIN_SRC emacs-lisp
-  (setq jms/dot-emacs-through-vcsh t)
+  (setq jms/dot-emacs-through-vcsh (string= (getenv "EMACS_CONFIG_IN_VCSH") "1"))
    #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
