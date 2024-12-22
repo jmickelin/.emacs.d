@@ -367,6 +367,14 @@ This often trips me up when using my WM (which binds ~s-l~).
   (setq set-mark-command-repeat-pop t)
 #+END_SRC
 
+** Sideline mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package sideline
+    :ensure t
+    :config (setq sideline-force-display-if-exceeds t))
+#+END_SRC
+
 * Buffers
 ** Ibuffer
 #+BEGIN_SRC emacs-lisp
@@ -1356,12 +1364,18 @@ Toggle a persistent highlight on current line.
   (put 'magit-edit-line-commit 'disabled nil)
 #+END_SRC
 
-** Blamer
+** sideline-blame
 
 #+BEGIN_SRC emacs-lisp
-  (use-package blamer
+  (use-package sideline-blame
     :ensure t
-    :config (global-blamer-mode 1))
+    :init (progn
+            (add-to-list 'sideline-backends-left '(sideline-blame . down))
+            (setq sideline-blame-datetime-format "%F "
+                  sideline-backends-left-skip-current-line t
+                  sideline-backends-right-skip-current-line t)
+
+            (global-sideline-mode 1)))
 #+END_SRC
 
 ** Ediff
