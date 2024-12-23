@@ -812,6 +812,12 @@ dotfiles on the current machine.
       (find-file org-file)))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+  (defun nixos-conf ()
+    (interactive)
+    (find-file (format "~/src/nixos-cfg/%s/" (system-name))))
+#+END_SRC
+
 * Movement and editing
 ** Avy
 Quickly jump within documents.
