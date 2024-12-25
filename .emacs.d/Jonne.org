@@ -912,10 +912,10 @@ Colour the background of yanked or undone text until next command.
 #+BEGIN_SRC emacs-lisp
   (use-package smartscan
     :ensure t
-    :config (progn
-              (bind-key "M-n" 'smartscan-symbol-go-forward smartscan-map)
-              (bind-key "M-p" 'smartscan-symbol-go-backward smartscan-map)
-              (global-smartscan-mode t)))
+    :bind (:map smartscan-map
+                ("M-n" . smartscan-symbol-go-forward)
+                ("M-p" . smartscan-symbol-go-backward))
+    :hook (prog-mode . smartscan-mode))
 #+END_SRC
 
 ** Tab-completion
