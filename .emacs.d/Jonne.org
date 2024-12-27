@@ -1729,17 +1729,17 @@ Configure LSP to run HIE inside a Nix shell:
   (defun jms/lsp-haskell-nix-wrapper-absolute (argv)
     (jms/lsp-haskell-nix-wrapper-with jms/haskell-shell-nix-path argv))
 
-  (defun jms/lsp-haskell-nix-wrapper-projectile-relative (argv)
+  (defun jms/lsp-haskell-nix-wrapper-project-relative (argv)
     (jms/lsp-haskell-nix-wrapper-with
-     (expand-file-name "shell.nix" (projectile-project-root)) argv))
+     (expand-file-name "shell.nix" (project-root (project-current))) argv))
 
   (defvar jms/lsp-haskell-server-alist
     '((none . ((path . nil)
                (wrapper-function . 'identity)))
       (hls-nix-absolute . ((path . "haskell-language-server-wrapper")
                            (wrapper-function . jms/lsp-haskell-nix-wrapper-absolute)))
-      (hls-nix-projectile . ((path . "haskell-language-server-wrapper")
-                             (wrapper-function . jms/lsp-haksell-nix-wrapper-projective-relative)))))
+      (hls-nix-project . ((path . "haskell-language-server-wrapper")
+                             (wrapper-function . jms/lsp-haskell-nix-wrapper-project-relative)))))
 
   (use-package lsp-haskell
     :ensure t
@@ -1753,7 +1753,7 @@ Configure LSP to run HIE inside a Nix shell:
           lsp-haskell-format-on-import-on t
           lsp-haskell-formatting-provider "stylish-haskell"
           lsp-haskell-server-args '("-d" "-l" "/tmp/hls.log")
-          jms/lsp-haskell-server 'hls-nix-projectile
+          jms/lsp-haskell-server 'hls-nix-project
           lsp-haskell-server-path (map-nested-elt jms/lsp-haskell-server-alist
                                                   (list jms/lsp-haskell-server 'path))
           lsp-haskell-server-wrapper-function (map-nested-elt jms/lsp-haskell-server-alist
