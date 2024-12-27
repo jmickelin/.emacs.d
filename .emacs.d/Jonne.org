@@ -1411,8 +1411,8 @@ Toggle a persistent highlight on current line.
 
                ;; Prefer the "margin-format" style for magit-blame
                magit-blame-styles '((margin
-                                     (margin-format " %s%f" " %C %a" " %H")
                                      (show-lines . nil)
+                                     (margin-format " %s%f" " %C %a%f" " %H%f")
                                      (margin-width . 55)
                                      (margin-face . magit-blame-margin)
                                      (margin-body-face magit-blame-dimmed))

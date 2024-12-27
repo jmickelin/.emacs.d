@@ -24,6 +24,25 @@
  '(company-tooltip ((t (:background "light cyan" :foreground "black"))))
  '(company-tooltip-annotation ((t (:background "light cyan" :foreground "black"))))
  '(company-tooltip-common ((t (:background "light cyan" :foreground "black"))))
- '(company-tooltip-common-selection ((t (:background "cornflower blue" :foreground "white smoke" :weight bold)))))
+ '(company-tooltip-common-selection ((t (:background "cornflower blue" :foreground "white smoke" :weight bold))))
+
+ ;; magit-blame
+
+ ;; Set an explicit background color for the first and subsequent
+ ;; blame lines for a commit, as well as an overline on the first
+ ;; line. We must make sure to set default values to the other fields,
+ ;; because they may be affected by other overlays for that particular
+ ;; line, e.g. bold from an org-header bleeding into the blame margin.
+ '(magit-blame-margin ((t (:inherit (magit-blame-highlight) :weight semibold :slant normal :underline nil :background "#ffd787" :overline t))))
+ '(magit-blame-dimmed ((t (:inherit (magit-blame-highlight) :weight extra-light :slant normal :underline nil :background "#ffffaf":overline nil))))
+
+ ;; Next make the font of the first line (the summary) inherit from
+ ;; `magit-blame-margin' and set the background to nil to inherit it.
+ ;; Similarly, the subsequent fields inherit their backgrounds from
+ ;; `magit-blame-dimmed'.
+ '(magit-blame-summary ((t (:inherit magit-blame-margin :background nil))))
+ '(magit-blame-date ((t (:inherit magit-blame-dimmed :background nil))))
+ '(magit-blame-name ((t (:inherit magit-blame-dimmed :background nil))))
+ '(magit-blame-hash ((t (:inherit magit-blame-dimmed :foreground "#b2b2b2" :background nil)))))
 
 (provide-theme 'ljhms-moe-light-tweaks)
