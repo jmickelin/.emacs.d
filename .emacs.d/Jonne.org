@@ -1240,10 +1240,15 @@ Use =anzu-mode= for improved query-replace behaviour.
 ** Window management
 
 #+BEGIN_SRC emacs-lisp
-  (bind-key "C-x 1" 'maximize-window)
-  (bind-key "C-x '" 'delete-other-windows)
   (bind-key "C-x C-'" 'balance-windows)
   (setq window-resize-pixelwise t)
+#+END_SRC
+
+Redefine =C-x 1= to just maximize the window, leaving a tiny sliver of
+the other windows visible. Use =C-x '= for the usual behavior.
+#+BEGIN_SRC emacs-lisp
+  (bind-key "C-x 1" 'maximize-window)
+  (bind-key "C-x '" 'delete-other-windows)
 #+END_SRC
 
 ** Yasnippets
