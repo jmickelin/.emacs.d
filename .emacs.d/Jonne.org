@@ -1033,6 +1033,11 @@ Alternatively, use ~ido-at-point~ for ~ido~-like matching.
 ** Electric parentheses
 #+BEGIN_SRC emacs-lisp
   (electric-pair-mode t)
+
+  (setq electric-pair-preserve-balance t
+        electric-pair-open-newline-between-pairs nil
+        electric-pair-inhibit-predicate 'electric-pair-default-inhibit
+        electric-pair-skip-whitespace nil)
 #+END_SRC
 
 ** Multiple cursors
