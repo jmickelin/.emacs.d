@@ -2440,162 +2440,29 @@ Use ligatures (no sensible way to opt in to everything, sadly):
 #+END_SRC
 
 *** Theme
-Change the theme:
+The base theme is moe-light:
 #+BEGIN_SRC emacs-lisp
   (use-package moe-theme
     :ensure t
-    :config (load-theme 'moe-light t))
+    :config (enable-theme 'moe-light))
 #+END_SRC
 
-Change colors for LSP:
+But we override some parts of the theme to my liking:
 #+BEGIN_SRC emacs-lisp
-  (custom-set-faces
-   '(lsp-ui-doc-background ((t (:background "light cyan" :foreground "black"))))
-   '(lsp-ui-doc-header ((t (:background "cornflower blue" :foreground "white smoke"))))
-   '(lsp-ui-peek-header ((t (:background "cornflower blue" :foreground "white smoke"))))
-   '(lsp-ui-peek-highlight ((t (:background "indian red" :foreground "black"))))
-   '(lsp-ui-peek-list ((t (:background "light cyan" :foreground "black"))))
-   '(lsp-ui-peek-peek ((t (:background "light cyan" :foreground "black"))))
-   '(lsp-ui-peek-selection ((t (:background "coral" :foreground "black"))))
-   '(lsp-ui-sideline-code-action ((t (:height 0.6 :foreground "grey45" :box (:line-width 5 :color "grey95" :style none) :background "grey95" :weight thin))))
-   '(lsp-ui-sideline-current-symbol ((t (:foreground "dim gray" :box (:line-width -1 :color "dim gray") :weight ultra-bold :height 0.6)))))
+  (load-theme 'ljhms-moe-light-tweaks t nil)
 #+END_SRC
 
-Change colors for company:
+*** Modeline
 
-#+BEGIN_SRC emacs-lisp
-  (custom-set-faces
-   '(company-preview ((t (:background "light cyan" :foreground "black"))))
-   '(company-preview-common ((t (:background "cornflower blue" :foreground "white smoke"))))
-   '(company-preview-search ((t (:background "light cyan" :foreground "black" :weight bold))))
-   '(company-tooltip ((t (:background "light cyan" :foreground "black"))))
-   '(company-tooltip-annotation ((t (:background "light cyan" :foreground "black"))))
-   '(company-tooltip-common ((t (:background "light cyan" :foreground "black"))))
-   '(company-tooltip-common-selection ((t (:background "cornflower blue" :foreground "white smoke" :weight bold)))))
-#+END_SRC
-
-** Modeline
-
+The modeline has significant tweaks to the point where I use none of
+the default settings from moe-light. This theme also sets a custom
+=mode-line-format=. It it throws away e.g. the minor modes, rather
+than using diminish, since I dislike the clutter:
 #+BEGIN_SRC emacs-lisp
   (which-function-mode 1)
   (setq which-func-unknown "⊤")
 
-  ;; Source: http://amitp.blogspot.se/2011/08/emacs-custom-mode-line.html
-
-  ;; Mode line setup
-  (setq-default
-   mode-line-format
-   '(; Position, including warning for 80 columns
-     (:propertize "%4l:" face mode-line-position-face)
-     (:eval (propertize "%2c" 'face
-                        (if (>= (current-column) 80)
-                            'mode-line-80col-face
-                          'mode-line-position-face)))
-     ; emacsclient [default -- keep?]
-     mode-line-client
-     "  "
-     ; read-only or modified status
-     (:eval
-      (cond (buffer-read-only
-             (propertize " RO " 'face 'mode-line-read-only-face))
-            ((buffer-modified-p)
-             (propertize " ** " 'face 'mode-line-modified-face))
-            (t "    ")))
-     "  "
-     ; directory and buffer/file name
-     ;; (:propertize (:eval (shorten-directory default-directory 30))
-     ;;              face mode-line-folder-face)
-     (:propertize "%b"
-                  face mode-line-filename-face)
-     ; narrow [default -- keep?]
-     " %n "
-     ; mode indicators: vc, recursive edit, major mode, minor modes, process, global
-     (vc-mode vc-mode)
-     " "
-     (:propertize mode-name
-                  face mode-line-mode-face)
-     " "
-     ;; (:eval (propertize (format-mode-line minor-mode-alist)
-     ;;                    'face 'mode-line-minor-mode-face))
-     (:propertize mode-line-process
-                  face mode-line-process-face)
-     "  "
-     (:propertize which-func-current
-                  face mode-line-filename-face)
-     ;"  "
-     ;(global-mode-string global-mode-string)
-     ;"    "
-     ; nyan-mode uses nyan cat as an alternative to %p
-     ;(:eval (when nyan-mode (list (nyan-create))))
-     ))
-
-  ;; Helper function
-  (defun shorten-directory (dir max-length)
-    "Show up to `max-length' characters of a directory name `dir'."
-    (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
-          (output ""))
-      (when (and path (equal "" (car path)))
-        (setq path (cdr path)))
-      (while (and path (< (length output) (- max-length 4)))
-        (setq output (concat (car path) "/" output))
-        (setq path (cdr path)))
-      (when path
-        (setq output (concat ".../" output)))
-      output))
-
-  ;; Extra mode line faces
-  (make-face 'mode-line-read-only-face)
-  (make-face 'mode-line-modified-face)
-  (make-face 'mode-line-folder-face)
-  (make-face 'mode-line-filename-face)
-  (make-face 'mode-line-position-face)
-  (make-face 'mode-line-mode-face)
-  (make-face 'mode-line-minor-mode-face)
-  (make-face 'mode-line-process-face)
-  (make-face 'mode-line-80col-face)
-
-  (set-face-attribute 'mode-line nil
-      :foreground "gray60" :background "gray20"
-      :inverse-video nil
-      :box '(:line-width 4 :color "gray20" :style nil))
-  (set-face-attribute 'mode-line-inactive nil
-      :foreground "gray80" :background "gray40"
-      :inverse-video nil
-      :box '(:line-width 4 :color "gray40" :style nil))
-
-  (set-face-attribute 'mode-line-read-only-face nil
-      :inherit 'mode-line-face
-      :foreground "#4271ae"
-      :box '(:line-width 2 :color "#4271ae"))
-  (set-face-attribute 'mode-line-modified-face nil
-      :inherit 'mode-line-face
-      :foreground "#c82829"
-      :background "#ffffff"
-      :box '(:line-width 2 :color "#c82829"))
-  (set-face-attribute 'mode-line-folder-face nil
-      :inherit 'mode-line-face
-      :foreground "gray60")
-  (set-face-attribute 'mode-line-filename-face nil
-      :inherit 'mode-line-face
-      :foreground "#eab700"
-      :weight 'bold)
-  (set-face-attribute 'mode-line-position-face nil
-      :inherit 'mode-line-face
-      :family "DejaVu Sans Mono")
-  (set-face-attribute 'mode-line-mode-face nil
-      :inherit 'mode-line-face
-      :foreground "gray80"
-      :box '(:line-width 2 :color "gray60"))
-  (set-face-attribute 'mode-line-minor-mode-face nil
-      :inherit 'mode-line-mode-face
-      :foreground "gray40"
-      :height 110)
-  (set-face-attribute 'mode-line-process-face nil
-      :inherit 'mode-line-face
-      :foreground "#718c00")
-  (set-face-attribute 'mode-line-80col-face nil
-      :inherit 'mode-line-position-face
-      :foreground "black" :background "#eab700")
+  (load-theme 'ljhms-modeline t nil)
 #+END_SRC
 
 * Apply machine-local settings
