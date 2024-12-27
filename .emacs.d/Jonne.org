@@ -314,6 +314,14 @@ such as ido.
 #+END_SRC
 
 * Behaviour
+** Disable electric-indent-mode
+
+Recent Emacs versions have switched to turning electric-indent-mode on
+by default. It's quite rude.
+#+BEGIN_SRC emacs-lisp
+  (electric-indent-mode -1)
+#+END_SRC
+
 ** Faster tramp remote editing
 
 #+BEGIN_SRC emacs-lisp
