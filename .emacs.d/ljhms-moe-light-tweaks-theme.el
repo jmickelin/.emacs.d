@@ -34,15 +34,15 @@
  ;; because they may be affected by other overlays for that particular
  ;; line, e.g. bold from an org-header bleeding into the blame margin.
  '(magit-blame-margin ((t (:inherit (magit-blame-highlight) :weight semibold :slant normal :underline nil :background "#ffd787" :overline t))))
- '(magit-blame-dimmed ((t (:inherit (magit-blame-highlight) :weight extra-light :slant normal :underline nil :background "#ffffaf":overline nil))))
+ '(magit-blame-dimmed ((t (:inherit (magit-blame-highlight) :weight extra-light :slant normal :underline nil :background "#ffffaf" :overline nil))))
 
  ;; Next make the font of the first line (the summary) inherit from
- ;; `magit-blame-margin' and set the background to nil to inherit it.
- ;; Similarly, the subsequent fields inherit their backgrounds from
- ;; `magit-blame-dimmed'.
- '(magit-blame-summary ((t (:inherit magit-blame-margin :background nil))))
- '(magit-blame-date ((t (:inherit magit-blame-dimmed :background nil))))
- '(magit-blame-name ((t (:inherit magit-blame-dimmed :background nil))))
- '(magit-blame-hash ((t (:inherit magit-blame-dimmed :foreground "#b2b2b2" :background nil)))))
+ ;; `magit-blame-margin' and set the background to unspecified to
+ ;; inherit it. Similarly, the subsequent fields inherit their
+ ;; backgrounds from `magit-blame-dimmed'.
+ '(magit-blame-summary ((t (:inherit magit-blame-margin :background unspecified))))
+ '(magit-blame-date ((t (:inherit magit-blame-dimmed :background unspecified))))
+ '(magit-blame-name ((t (:inherit magit-blame-dimmed :background unspecified))))
+ '(magit-blame-hash ((t (:inherit magit-blame-dimmed :foreground "#b2b2b2" :background unspecified)))))
 
 (provide-theme 'ljhms-moe-light-tweaks)
