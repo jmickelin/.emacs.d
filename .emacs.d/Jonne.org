@@ -417,76 +417,97 @@ This often trips me up when using my WM (which binds ~s-l~).
 ** Ibuffer
 #+BEGIN_SRC emacs-lisp
   (use-package ibuffer
-      :bind ("C-x C-b" . ibuffer)
-      :config
-      (progn
-        (use-package ibuf-ext)
+      :bind ("C-x C-b" . ibuffer))
 
-        (use-package ibuffer-projectile
-          :ensure t)
+  (use-package ibuf-ext
+    :requires ibuffer)
 
-        (setq jms/ibuffer-filter-groups
-              '(("*buffers*" (name . "^\\*.*\\*"))))
-        (add-hook 'ibuffer-hook
-            (lambda ()
-              ;; ibuffer-projectile has performance issues, so telling
-              ;; it to not auto-refresh makes it less painful to run it
-              ;; often to jump between buffers
-              (setq ibuffer-auto-mode nil)
+  (use-package ibuffer-project
+    :ensure t
+    :requires ibuffer
+    :config
+    (defun jms/ibuffer-init ()
+      "Set up the filter groups."
 
-              (ibuffer-projectile-set-filter-groups)
-              (unless (eq ibuffer-sorting-mode 'alphabetic)
-                (ibuffer-do-sort-by-alphabetic))
-              ;; (setq ibuffer-filter-groups
-              ;;       (append jms/ibuffer-filter-groups
-              ;;               (ibuffer-projectile-generate-filter-groups)))
+      (ibuffer-auto-mode)
 
-              (ibuffer-update nil t))))
+      (setq ibuffer-filter-groups
+            (append jms/ibuffer-filter-groups
+                    (ibuffer-project-generate-filter-groups)))
 
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; Change the ordering of the filter groups. This must be done as an ;;
-        ;; advice, since the ordering in ibuffer-filter-groups also defines  ;;
-        ;; precedence of the tests. Furthermore, ibuffer-redisplay-engine    ;;
-        ;; reverses the list of groups returned by                           ;;
-        ;; ibuffer-generate-filter-groups, so we need to compute the reverse ;;
-        ;; ordering.                                                         ;;
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      (unless (eq ibuffer-sorting-mode 'project-file-relative)
+        (ibuffer-do-sort-by-project-file-relative)))
 
-        ;; Returns the precedence of a group given it's name. The lower the
-        ;; precedence, the higher the position.
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Change the ordering of the filter groups. This must be done as an ;;
+    ;; advice, since the ordering in ibuffer-filter-groups also defines  ;;
+    ;; precedence of the tests. Furthermore, ibuffer-redisplay-engine    ;;
+    ;; reverses the list of groups returned by                           ;;
+    ;; ibuffer-generate-filter-groups, so we need to compute the reverse ;;
+    ;; ordering.                                                         ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-        (defun jms/ibuffer-sort-precedence (group-name)
-          (cond ((string-match (concat "^Projectile:") group-name) 10)
-                ((string= "Default" group-name) 40)
-                ((string= "Latex" group-name) 50)
-                ((string= "*buffers*" group-name) 9999)
-                (t 45)))
+    (defun jms/ibuffer-sort-precedence (group-name)
+      "Returns the precedence of a group given it's name. The lower the
+       precedence, the higher the position. Groups that match no
+       predicate is given default precedence of 45."
+      (cond ((string-match (concat "^Project:") group-name) 10)
+            ((string= "Default" group-name) 40)
+            ((string= "Latex" group-name) 50)
+            ((string= "*buffers*" group-name) 9999)
+            (t 45)))
 
-        ;; Sort lexicographically on the precedence followed by the natural
-        ;; string ordering.
+    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+                                                activate)
+      "Transform the result returned by `ibuffer-generate-filter-groups'
+      to reorder the groups according to the precedences defined in
+      jms/ibuffer-sort-precedence. Groups with the same precedence are
+      ordered alphabetically."
+      (setq ad-return-value
+            (nreverse (sort ad-return-value
+                            (lambda (a b)
+                              (let* ((id1 (car a))
+                                     (id2 (car b))
+                                     (precedence1  (jms/ibuffer-sort-precedence id1))
+                                     (precedence2  (jms/ibuffer-sort-precedence id2)))
+                                (if (= precedence1 precedence2)
+                                    (string< id1 id2)
+                                  (< precedence1 precedence2))))))))
 
-        (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
-                                                         activate)
-          (setq ad-return-value
-                (nreverse (sort ad-return-value
-                                (lambda (a b)
-                                  (let* ((id1 (car a))
-                                         (id2 (car b))
-                                         (precedence1  (jms/ibuffer-sort-precedence id1))
-                                         (precedence2  (jms/ibuffer-sort-precedence id2)))
-                                    (if (= precedence1 precedence2)
-                                        (string< id1 id2)
-                                        (< precedence1 precedence2))))))))
+    (add-to-list 'ibuffer-project-root-functions
+                 '((lambda (dir)
+                     (replace-regexp-in-string
+                      ;; Shorten long nix store paths (include 6 chacters
+                      ;; of the hash)
+                      "^\\(/nix/store/......\\).*?\\(-.*\\)$"
+                      "\\1...\\2"
+                      dir)) . "Directory"))
+    (ibuffer-project-clear-cache)
 
-        (setq ibuffer-formats
-              '((mark modified read-only " "
-                 (name 25 25 :left :elide)
-                 " "
-                 ;(size 9 -1 :right)
-                 ;" "
-                 (mode 14 14 :left :elide)
-                 " "
-                 project-relative-file))))
+    (setq
+     jms/ibuffer-filter-groups
+     '(;; List buffers named `*<name>*' in a separate heading.
+       ("*buffers*" (name . "^\\*.*\\*")))
+
+     ;; `ibuffer-project-generate-filter-groups' does not check whether
+     ;; a buffer would be moved to a dedicated group such as the ones in
+     ;; `jms/ibuffer-filter-groups'. We set this to nil to ensure that
+     ;; groups left empty are hidden.
+     ibuffer-show-empty-filter-groups nil
+
+     ibuffer-project-use-cache t
+
+     ;; Add a column for the filename relative to project root.
+     ;; Remove the column for size.
+     ibuffer-formats
+     '((mark modified read-only " "
+             (name 25 25 :left :elide)
+             " "
+             (mode 14 14 :left :elide)
+             " "
+             project-file-relative)))
+
+    :hook (ibuffer . jms/ibuffer-init))
 #+END_SRC
 
 ** Uniquify
@@ -1173,12 +1194,15 @@ Search for symbol at point using =C-u C-s=.
                   #'jms/isearch-symbol-with-prefix)
 #+END_SRC
 
-Follow matching lines in their own buffer when moving in search buffers.
-
+Use =ag= for searching file contents. Follow matching lines in their own buffer when moving in search buffers.
 #+BEGIN_SRC emacs-lisp
-  (after 'ag
-    (add-hook 'ag-mode-hook 'next-error-follow-minor-mode))
+  (use-package ag
+    :ensure t
+    :hook (ag-mode . next-error-follow-minor-mode))
+#+END_SRC
 
+Do the same for =occur-mode=.
+#+BEGIN_SRC emacs-lisp
   (add-hook 'occur-mode-hook 'next-error-follow-minor-mode)
 #+END_SRC
 
@@ -1352,19 +1376,10 @@ Toggle a persistent highlight on current line.
 ** Projectile
 
 #+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :ensure t
-    :defer t
-    :bind-keymap ("C-c p" . projectile-command-map)
-    :config (use-package ag
-              :ensure t)
-    :init (progn
-            (setq projectile-known-projects-file
-                  (expand-file-name "projectile-bookmarks.eld"
-                                    jms/var-directory)
-                  projectile-enable-caching t
-                  projectile-switch-project-action #'projectile-vc)
-            (projectile-global-mode)))
+  (bind-key "C-c p" project-prefix-map)
+  (setq project-list-file
+        (expand-file-name "projects"
+                          jms/var-directory))
 #+END_SRC
 
 * Version control
