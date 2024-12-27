@@ -2181,22 +2181,26 @@ Typing the ~#+BEGIN_SRC <lang>~ things manually is tedious.
              (if (consp current-prefix-arg)
                  (car current-prefix-arg)
                0))))
-    (progn
+    (let ((indent (save-excursion
+                    (indent-according-to-mode)
+                    (current-column))))
       (if (not (= prefix 4))
           (newline-and-indent)
         (call-interactively 'jms/org-insert-name-keyword)
-        (indent-according-to-mode))
+        (indent-to indent))
 
       (insert (format "#+BEGIN_SRC %s" src-code-type))
       (when (= prefix 16)
           (insert " :noweb yes"))
 
-      (newline-and-indent)
-      (newline-and-indent)
-
+      (insert "\n\n")
+      (indent-to indent)
       (insert "#+END_SRC\n")
 
       (previous-line 2)
+
+      (indent-according-to-mode)
+
       (org-edit-src-code)))
 
   (bind-key "C-c s i" 'jms/org-insert-src-block org-mode-map)
@@ -2208,19 +2212,19 @@ Split a source code block intelligently.
     "End the source code block at point and open a new one with the
   same header."
     (interactive)
-    (let ((info (org-babel-get-src-block-info)))
-      (when info
-        (let* ((indent (nth 5 info))
-               (beg (org-babel-where-is-src-block-head))
-               (end (save-excursion (goto-char beg) (line-end-position)))
-               (header (buffer-substring beg end)))
-          (newline)
-          (indent-to indent)
-          (insert "#+END_SRC")
-          (newline-and-indent)
-          (newline)
-          (insert header)
-          (previous-line)))))
+    (let* ((beg (org-babel-where-is-src-block-head))
+           (end (save-excursion (goto-char beg) (line-end-position)))
+           (header (buffer-substring beg end))
+           (indent (save-excursion
+                     (goto-char beg)
+                     (current-column))))
+      (insert "\n")
+      (indent-to indent)
+      (insert "#+END_SRC")
+      (insert "\n\n")
+      (insert header)
+      (previous-line)
+      (indent-according-to-mode)))
 
   (bind-key "M-S" 'jms/org-split-source-block org-mode-map)
 #+END_SRC
