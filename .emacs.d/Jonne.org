@@ -1399,45 +1399,53 @@ Toggle a persistent highlight on current line.
     :ensure t
     :bind (("C-M-g" . magit-status)
            ("C-M-ö" . magit-dispatch)
-           ("C-M-m" . magit-file-dispatch))
-    :config (progn
-              (setq
-               ;; Pop up the status window in the same buffer that it's invoked
-               magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1
+           ("C-M-m" . magit-file-dispatch)
+           :map magit-blame-mode-map
+           ("C-<return>" . jms/magit-blame-dig-deeper))
+    :config
+    (defun jms/magit-blame-dig-deeper ()
+      (interactive)
+      (magit-blame-visit-file)
+      (magit-blame))
 
-               ;; Signing
-               magit-log-show-gpg-status t
-               magit-commit-arguments '("--gpg-sign")
+    (setq
+       ;; Pop up the status window in the same buffer that it's invoked
+       magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1
 
-               ;; Prefer the "margin-format" style for magit-blame
-               magit-blame-styles '((margin
-                                     (show-lines . nil)
-                                     (margin-format " %s%f" " %C %a%f" " %H%f")
-                                     (margin-width . 55)
-                                     (margin-face . magit-blame-margin)
-                                     (margin-body-face magit-blame-dimmed))
-                                    (headings
-                                     (heading-format . "%-20a %C %s\n"))
-                                    (highlight
-                                     (highlight-face . magit-blame-highlight))
-                                    (lines
-                                     (show-lines . t)
-                                     (show-message . t)))
+       ;; Signing
+       magit-log-show-gpg-status t
+       magit-commit-arguments '("--gpg-sign")
 
-               ;; Ask for name of new branch before parent when creating branch
-               magit-branch-read-upstream-first nil
+       ;; Prefer the "margin-format" style for magit-blame
+       magit-blame-styles '((margin
+                             (show-lines . nil)
+                             (margin-format " %s%f" " %C %a%f" " %H%f")
+                             (margin-width . 55)
+                             (margin-face . magit-blame-margin)
+                             (margin-body-face magit-blame-dimmed))
+                            (headings
+                             (heading-format . "%-20a %C %s\n"))
+                            (highlight
+                             (highlight-face . magit-blame-highlight))
+                            (lines
+                             (show-lines . t)
+                             (show-message . t)))
 
-               ;; Set pushDefault when cloning
-               magit-clone-set-remote-set.pushDefault t)
+       ;; Ask for name of new branch before parent when creating branch
+       magit-branch-read-upstream-first nil
 
-              ;; Add gpg signing option to rebase
-              (transient-append-suffix 'magit-rebase "-A"
-                '("-S" "Sign using gpg" "--gpg-sign=" magit-read-gpg-secret-key
-                  :class transient-option :allow-empty t))))
+       ;; Set pushDefault when cloning
+       magit-clone-set-remote-set.pushDefault t)
+  
+    ;; Add gpg signing option to rebase
+    (transient-append-suffix 'magit-rebase "-A"
+      '("-S" "Sign using gpg" "--gpg-sign=" magit-read-gpg-secret-key
+        :class transient-option :allow-empty t))
 
-  ;; Reenable inline editing of previous versions of file (automatically
-  ;; triggers a rebase)
-  (put 'magit-edit-line-commit 'disabled nil)
+    ;; Reenable inline editing of previous versions of file (automatically
+    ;; triggers a rebase)
+    (put 'magit-edit-line-commit 'disabled nil))
+
 #+END_SRC
 
 ** sideline-blame
