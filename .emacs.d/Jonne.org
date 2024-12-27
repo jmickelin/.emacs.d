@@ -1417,7 +1417,7 @@ Toggle a persistent highlight on current line.
                                      (margin-face . magit-blame-margin)
                                      (margin-body-face magit-blame-dimmed))
                                     (headings
-                                     (heading-format . "%-20a %C %s"))
+                                     (heading-format . "%-20a %C %s\n"))
                                     (highlight
                                      (highlight-face . magit-blame-highlight))
                                     (lines
