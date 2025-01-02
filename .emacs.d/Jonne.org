@@ -413,6 +413,13 @@ This often trips me up when using my WM (which binds ~s-l~).
   (setq set-mark-command-repeat-pop t)
 #+END_SRC
 
+** Eldoc
+
+Show documentation in the modeline. This is used by Eglot to fetch
+documentation and type annotations from LSP.
+#+BEGIN_SRC emacs-lisp
+  (use-package eldoc)
+#+END_SRC
 ** Sideline mode
 
 #+BEGIN_SRC emacs-lisp
@@ -1863,14 +1870,12 @@ Finally, set up Haskell mode:
 #+END_SRC
 
 ** Lisp
-Show documentation in the modeline.
+
+Turn on Eldoc for a number of Lisp modes:
 #+BEGIN_SRC emacs-lisp
-  (use-package eldoc
-    :init
-    (progn
-      (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-      (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-      (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)))
+  (add-hook 'emacs-lisp-mode-hook #'turn-on-eldoc-mode)
+  (add-hook 'lisp-interaction-mode-hook #'turn-on-eldoc-mode)
+  (add-hook 'ielm-mode #'turn-on-eldoc-mode)
 #+END_SRC
 
 Use paredit.
