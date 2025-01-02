@@ -420,6 +420,17 @@ documentation and type annotations from LSP.
 #+BEGIN_SRC emacs-lisp
   (use-package eldoc)
 #+END_SRC
+
+Display Eldoc in a childframe instead of using the modeline.
+#+BEGIN_SRC emacs-lisp
+  (use-package eldoc-box
+    :ensure t
+    :config (setopt eldoc-box-offset '(32 32 16)
+                    eldoc-box-clear-with-C-g t)
+
+    :hook ((eldoc-mode . eldoc-box-hover-mode)))
+#+END_SRC
+
 ** Sideline mode
 
 #+BEGIN_SRC emacs-lisp
