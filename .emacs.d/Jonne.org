@@ -1548,8 +1548,7 @@ Use as an image viewer.
 ** External
 
 #+BEGIN_SRC emacs-lisp
-  (setq browse-url-browser-function 'browse-url-generic
-        browse-url-generic-program "/usr/bin/firefox")
+  (setq browse-url-browser-function 'browse-url-default-browser)
 #+END_SRC
 
 ** Elisp Bug Hunter
