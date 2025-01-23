@@ -557,19 +557,15 @@ Display Eldoc in a childframe instead of using the modeline.
 
 #+BEGIN_SRC emacs-lisp
   (use-package dired-x
-      :init (add-hook 'dired-load-hook (lambda ()
-                                         (load "dired-x"))))
+    :hook (dired-load-hook . (lambda ()
+                               (load "dired-x"))))
 
-  (defun jms/dired-init ()
-    ;; Dired mixes normal files and dotfiles. Since I couldn't figure
-    ;; out how to fix this, we count dotfiles as boring.
-    (dired-omit-mode 1)
-    (setq dired-omit-files (concat dired-omit-files "\\|^\\.[^\\.]+$"))
-
-    ;; Sort directories first, then by by extension.
-    (setq dired-listing-switches "-lGh --group-directories-first"))
-
-  (add-hook 'dired-load-hook #'jms/dired-init)
+  (setq
+   ;; Reload the contents of directories every time they are visited
+   dired-auto-revert-buffer t
+   ;; Sort directories first, then apply "natural sorting" to
+   ;; prevent dotfiles intermingling with normal files.
+   dired-listing-switches "-alGhv --group-directories-first")
 #+END_SRC
 
 ** vcsh
